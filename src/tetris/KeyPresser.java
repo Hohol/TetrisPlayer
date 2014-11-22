@@ -6,7 +6,6 @@ package tetris;
 import java.awt.*;
 
 import static java.awt.event.KeyEvent.VK_LEFT;
-import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.awt.event.KeyEvent.VK_SPACE;
 
 /**
@@ -32,12 +31,8 @@ public class KeyPresser {
         }
     }/**/
 
-    public void left() {
-        press(VK_LEFT);
-    }
-
-    public void drop() {
-        press(VK_SPACE);
+    public void makeMove(Move move) {
+        press(move.getKeyCode());
     }
 
     private void press(int key) {
