@@ -3,6 +3,8 @@
  */
 package tetris;
 
+import java.util.List;
+
 /**
  * GameState
  *
@@ -10,18 +12,18 @@ package tetris;
  */
 public class GameState {
     private final Board board;
-    private final Tetrimino next;
+    private final List<Tetrimino> nextTetriminoes;
 
-    public GameState(Board board, Tetrimino next) {
+    public GameState(Board board, List<Tetrimino> nextTetriminoes) {
         this.board = board;
-        this.next = next;
+        this.nextTetriminoes = nextTetriminoes;
     }
 
     public Board getBoard() {
         return board;
     }
 
-    public Tetrimino getNext() {
-        return next;
+    public List<Tetrimino> getNextTetriminoes() {
+        return nextTetriminoes;
     }
 }

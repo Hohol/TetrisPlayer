@@ -125,6 +125,9 @@ public class Board {
         for (int i = 0; i < tetrimino.getHeight(); i++) {
             for (int j = 0; j < tetrimino.getWidth(); j++) {
                 if (tetrimino.get(i, j)) {
+                    if (minNewTopTetriminoRow + i < 0) {
+                        return null;
+                    }
                     r.set(minNewTopTetriminoRow + i, leftCol + j, true);
                 }
             }

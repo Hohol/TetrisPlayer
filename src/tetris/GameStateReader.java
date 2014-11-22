@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -89,6 +90,6 @@ public class GameStateReader {
 
         Tetrimino next = new Tetrimino(b);
 
-        return new GameState(board, next);
+        return new GameState(board, Collections.singletonList(next));
     }
 }

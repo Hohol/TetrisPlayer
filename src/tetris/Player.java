@@ -10,17 +10,17 @@ public class Player {
         BestMoveFinder bestMoveFinder = new BestMoveFinder();
         //noinspection InfiniteLoopStatement
         while (true) {
-            Board board = gameStateReader.readGameState().getBoard();
+            GameState gameState = gameStateReader.readGameState();
+            Board board = gameState.getBoard();
             System.out.println(board);
             TetriminoWithPosition tetrimino = board.extractFallingTetrimino();
             if (tetrimino == null) {
                 System.out.println("skip");
                 continue;
             }
-            Move bestMove = bestMoveFinder.findBestMove(board, tetrimino);
+            Move bestMove = bestMoveFinder.findBestMove(gameState, tetrimino);
             System.out.println(bestMove);
             keyPresser.makeMove(bestMove);
-            //Thread.sleep(100);
         }
     }
 }
