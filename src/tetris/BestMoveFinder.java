@@ -21,19 +21,26 @@ public class BestMoveFinder {
     Move findBestMove(Board board, Tetrimino tetrimino) {
         //System.out.println(board);
         int bestNewLeftCol = -1;
+        int bestRotateCnt = -1;
         double maxEval = Double.NEGATIVE_INFINITY;
 
-        for (int newLeftCol = 0; newLeftCol + tetrimino.getWidth() - 1 < board.getWidth(); newLeftCol++) {
-            Board newBoard = board.drop(tetrimino, newLeftCol);
-            //System.out.println(newBoard);
-            double curEval = evaluator.evaluate(newBoard);
-            if (curEval > maxEval) {
-                maxEval = curEval;
-                bestNewLeftCol = newLeftCol;
+        for (int rotateCnt = 0; rotateCnt < 4; rotateCnt++) {
+            for (int newLeftCol = 0; newLeftCol + tetrimino.getWidth() - 1 < board.getWidth(); newLeftCol++) {
+                Board newBoard = board.drop(tetrimino, newLeftCol);
+                //System.out.println(newBoard);
+                double curEval = evaluator.evaluate(newBoard);
+                if (curEval > maxEval) {
+                    maxEval = curEval;
+                    bestNewLeftCol = newLeftCol;
+                    bestRotateCnt = rotateCnt;
+                }
             }
+            tetrimino = tetrimino.rotateCW();
         }
 
-        if (bestNewLeftCol < tetrimino.getLeftCol()) {
+        if (bestRotateCnt > 0) {
+            return ROTATE_CW;
+        } else if (bestNewLeftCol < tetrimino.getLeftCol()) {
             return LEFT;
         } else if (bestNewLeftCol > tetrimino.getLeftCol()) {
             return RIGHT;

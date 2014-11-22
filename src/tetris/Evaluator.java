@@ -29,6 +29,6 @@ public class Evaluator {
                 }
             }
         }
-        return minTopRow * 100 - badCnt;
+        return minTopRow - 100 *  badCnt;
     }
 }

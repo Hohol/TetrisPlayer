@@ -37,4 +37,14 @@ public class Tetrimino {
     public boolean get(int row, int col) {
         return b[row][col];
     }
+
+    public Tetrimino rotateCW() {
+        boolean[][] newB = new boolean[b[0].length][b.length];
+        for (int newRow = 0; newRow < newB.length; newRow++) {
+            for (int newCol = 0; newCol < newB[0].length; newCol++) {
+                newB[newRow][newCol] = b[newB[0].length - newCol - 1][newRow];
+            }
+        }
+        return new Tetrimino(topRow, leftCol, newB);
+    }
 }

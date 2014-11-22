@@ -13,7 +13,7 @@ import static java.awt.event.KeyEvent.*;
  * @author Nikita Glashenko (nikita.glashenko@maxifier.com) (2014-11-22 14:30)
  */
 public enum Move {
-    LEFT(VK_LEFT), RIGHT(VK_RIGHT), DROP(VK_SPACE), STASH(VK_C);
+    LEFT(VK_LEFT), RIGHT(VK_RIGHT), DROP(VK_SPACE), STASH(VK_C), ROTATE_CW(VK_UP);
 
     private final int keyCode;
 
