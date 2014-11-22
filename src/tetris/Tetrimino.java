@@ -6,21 +6,16 @@ package tetris;
 /**
  * Tetrimino
  *
- * @author Nikita Glashenko (nikita.glashenko@maxifier.com) (2014-11-22 13:37)
+ * @author Nikita Glashenko (nikita.glashenko@maxifier.com) (2014-11-22 17:32)
  */
 public class Tetrimino {
-    private final int topRow, leftCol;
     private final boolean[][] b;
 
-    public Tetrimino(int topRow, int leftCol, boolean[][] b) {
-        this.topRow = topRow;
-        this.leftCol = leftCol;
+    public Tetrimino(boolean[][] b) {
         this.b = b;
     }
 
-    public Tetrimino(int topRow, int leftCol, String s) {
-        this.topRow = topRow;
-        this.leftCol = leftCol;
+    public Tetrimino(String s) {
         String[] a = s.split("\n");
         b = new boolean[a.length][a[0].length()];
         for (int i = 0; i < b.length; i++) {
@@ -28,14 +23,6 @@ public class Tetrimino {
                 b[i][j] = (a[i].charAt(j) == 'x');
             }
         }
-    }
-
-    public int getTopRow() {
-        return topRow;
-    }
-
-    public int getLeftCol() {
-        return leftCol;
     }
 
     public int getWidth() {
@@ -57,6 +44,6 @@ public class Tetrimino {
                 newB[newRow][newCol] = b[newB[0].length - newCol - 1][newRow];
             }
         }
-        return new Tetrimino(topRow, leftCol, newB);
+        return new Tetrimino(newB);
     }
 }

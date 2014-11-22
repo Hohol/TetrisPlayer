@@ -18,8 +18,8 @@ public class BestMoveFinder {
         this.evaluator = new Evaluator();
     }
 
-    Move findBestMove(Board board, Tetrimino tetrimino) {
-        Action bestAction = findBestAction(board, tetrimino);
+    Move findBestMove(Board board, TetriminoWithPosition tetriminoWithPosition) {
+        Action bestAction = findBestAction(board, tetriminoWithPosition.getTetrimino());
 
         if (bestAction == null) {
             throw new RuntimeException("Best action not found");
@@ -28,9 +28,9 @@ public class BestMoveFinder {
         if (bestAction.getCwRotationCnt() > 0) {
             return ROTATE_CW;
         } else {
-            if (bestAction.getNewLeftCol() < tetrimino.getLeftCol()) {
+            if (bestAction.getNewLeftCol() < tetriminoWithPosition.getLeftCol()) {
                 return LEFT;
-            } else if (bestAction.getNewLeftCol() > tetrimino.getLeftCol()) {
+            } else if (bestAction.getNewLeftCol() > tetriminoWithPosition.getLeftCol()) {
                 return RIGHT;
             } else {
                 return DROP;

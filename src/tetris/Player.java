@@ -17,10 +17,11 @@ public class Player {
 
     public void play() throws Throwable {
         BestMoveFinder bestMoveFinder = new BestMoveFinder();
+        //noinspection InfiniteLoopStatement
         while (true) {
             Board board = readField();
             System.out.println(board);
-            Tetrimino tetrimino = board.extractFallingTetrimino();
+            TetriminoWithPosition tetrimino = board.extractFallingTetrimino();
             if (tetrimino == null) {
                 System.out.println("skip");
                 continue;

@@ -3,14 +3,12 @@ package tetris;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
-import static tetris.Move.*;
 
 @Test
 public class AllTest {
     @Test
     void test() {
         Board board = new Board(
-                        "....xxxx..\n" +
                         "..........\n" +
                         "..........\n" +
                         "..........\n" +
@@ -29,7 +27,7 @@ public class AllTest {
                         "xxxxxxxxx.\n" +
                         "xxxxxxxxx."
         );
-        Tetrimino tetrimino = board.extractFallingTetrimino();
+        Tetrimino tetrimino = new Tetrimino("xxxx");
         BestMoveFinder bestMoveFinder = new BestMoveFinder();
         assertEquals(bestMoveFinder.findBestAction(board, tetrimino), new Action(board.getWidth() - 1, 1));
     }
@@ -43,7 +41,7 @@ public class AllTest {
                         "xxxxxxxxx.\n" +
                         "xxxxxxxxx."
         );
-        Tetrimino tetrimino = new Tetrimino(0, board.getWidth() - 1,
+        Tetrimino tetrimino = new Tetrimino(
                         "x\n" +
                         "x\n" +
                         "x\n" +
