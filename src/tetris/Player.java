@@ -1,34 +1,39 @@
 package tetris;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 public class Player {
     private final Robot robot;
+    private final KeyPresser keyPresser;
 
     public Player() throws AWTException {
         robot = new Robot();
+        keyPresser = new KeyPresser(robot);
     }
 
     public void play() throws Throwable {
-        while(true) {
+        while (true) {
             Board board = readField();
             System.out.println(board);
-           // Thread.sleep(5000);
+            Tetrimino tetrimino = board.extractFallingTetrimino();
+            if (tetrimino == null) {
+                continue;
+            }
+            if (tetrimino.getCol() > 0) {
+                keyPresser.left();
+            } else {
+                keyPresser.drop();
+            }/**/
         }
     }
 
     private Board readField() {
-        // todo There are 3 pixels above. We can use them also.
-
         final int cellSize = 18;
-        int width = 10;
-        int height = 20;
         final Color emptyColor1 = new Color(38, 38, 38);
         final Color emptyColor2 = new Color(47, 47, 47);
 
-        BufferedImage img = robot.createScreenCapture(new Rectangle(2468, 259, width * cellSize, height * cellSize));
+        BufferedImage img = robot.createScreenCapture(new Rectangle(2468, 259 - cellSize, Board.WIDTH * cellSize, Board.HEIGHT * cellSize));
 
         /*try {
             ImageIO.write(img, "png", new File("img.png"));
@@ -38,36 +43,15 @@ public class Player {
 
         Board r = new Board();
 
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                //Color pixelColor = robot.getPixelColor(2468 + j * cellSize, 259 + i * cellSize);
-                Color pixelColor = new Color(img.getRGB(j * cellSize, i * cellSize));
+        for (int i = 0; i < Board.HEIGHT; i++) {
+            for (int j = 0; j < Board.WIDTH; j++) {
+                Color pixelColor = new Color(img.getRGB(j * cellSize, i * cellSize + cellSize - 1));
                 if (!pixelColor.equals(emptyColor1) && !pixelColor.equals(emptyColor2)) {
                     r.set(i, j, true);
                 }
-                //System.out.print(pixelColor + " ");
             }
-            //System.out.println();
         }
 
         return r;
-    }
-
-    private void pressButtons() throws InterruptedException {
-        Thread.sleep(5000);
-        press(KeyEvent.VK_ENTER);
-
-        //for (int i = 0; i < 30; i++) {
-        while (true) {
-            Thread.sleep(100);
-            press(KeyEvent.VK_LEFT);
-        }
-    }
-
-    private void press(int key) throws InterruptedException {
-        System.out.println("press!");
-        robot.keyPress(key);
-        Thread.sleep(100);
-        robot.keyRelease(key);
     }
 }
