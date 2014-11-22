@@ -46,4 +46,20 @@ public class Tetrimino {
         }
         return new Tetrimino(newB);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder r = new StringBuilder();
+        for (int i = 0; i < b.length; i++) {
+            for (int j = 0; j < b[0].length; j++) {
+                if (b[i][j]) {
+                    r.append("x");
+                } else {
+                    r.append(".");
+                }
+            }
+            r.append("\n");
+        }
+        return r.toString();
+    }
 }

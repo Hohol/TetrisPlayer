@@ -13,8 +13,12 @@ import java.awt.*;
 public class KeyPresser {
     private final Robot robot;
 
-    public KeyPresser(Robot robot) {
-        this.robot = robot;
+    public KeyPresser() {
+        try {
+            robot = new Robot();
+        } catch (AWTException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void makeMove(Move move) {
