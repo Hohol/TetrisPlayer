@@ -5,9 +5,6 @@ package tetris;
 
 import java.awt.*;
 
-import static java.awt.event.KeyEvent.VK_LEFT;
-import static java.awt.event.KeyEvent.VK_SPACE;
-
 /**
  * KeyPresser
  *
@@ -20,29 +17,17 @@ public class KeyPresser {
         this.robot = robot;
     }
 
-    /*private void pressButtons() throws InterruptedException {
-        Thread.sleep(5000);
-        press(KeyEvent.VK_ENTER);
-
-        //for (int i = 0; i < 30; i++) {
-        while (true) {
-            Thread.sleep(100);
-            press(KeyEvent.VK_LEFT);
-        }
-    }/**/
-
     public void makeMove(Move move) {
         press(move.getKeyCode());
     }
 
     private void press(int key) {
-        System.out.println("press!");
         robot.keyPress(key);
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
+        }/**/
         robot.keyRelease(key);
     }
 }

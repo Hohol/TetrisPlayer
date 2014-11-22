@@ -22,9 +22,13 @@ public class Player {
             System.out.println(board);
             Tetrimino tetrimino = board.extractFallingTetrimino();
             if (tetrimino == null) {
+                System.out.println("skip");
                 continue;
             }
-            keyPresser.makeMove(bestMoveFinder.findBestMove(board, tetrimino));
+            Move bestMove = bestMoveFinder.findBestMove(board, tetrimino);
+            System.out.println(bestMove);
+            keyPresser.makeMove(bestMove);
+            //Thread.sleep(100);
         }
     }
 

@@ -68,7 +68,7 @@ public class Board {
         int bottomRow = 0;
         int rightCol = 0;
         fori:
-        for (int i = 0; i < height; i++) {
+        for (int i = 0; i < height / 2; i++) {
             boolean foundOnLine = false;
             for (int j = 0; j < width; j++) {
                 if (b[i][j]) {
@@ -124,12 +124,39 @@ public class Board {
         Board r = new Board(this);
         for (int i = 0; i < tetrimino.getHeight(); i++) {
             for (int j = 0; j < tetrimino.getWidth(); j++) {
-                if(tetrimino.get(i,j)) {
+                if (tetrimino.get(i, j)) {
                     r.set(minNewTopTetriminoRow + i, leftCol + j, true);
                 }
             }
         }
+        r.clearFullRows();
         return r;
+    }
+
+    private void clearFullRows() {
+        boolean[] full = new boolean[height];
+        for (int row = 0; row < height; row++) {
+            full[row] = true;
+            for (int col = 0; col < width; col++) {
+                if (!b[row][col]) {
+                    full[row] = false;
+                    break;
+                }
+            }
+        }
+        for (int col = 0; col < width; col++) {
+            int botRow = height - 1;
+            for (int row = height - 1; row >= 0; row--) {
+                if (!full[row]) {
+                    b[botRow][col] = b[row][col];
+                    botRow--;
+                }
+            }
+            while (botRow >= 0) {
+                b[botRow][col] = false;
+                botRow--;
+            }
+        }
     }
 
     public int getTopRowInColumn(int col) {
@@ -145,5 +172,26 @@ public class Board {
 
     public int getHeight() {
         return height;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Board board = (Board) o;
+
+        if (height != board.height) return false;
+        if (width != board.width) return false;
+
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (b[i][j] != board.b[i][j]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }

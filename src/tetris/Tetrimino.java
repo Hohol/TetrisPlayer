@@ -18,6 +18,18 @@ public class Tetrimino {
         this.b = b;
     }
 
+    public Tetrimino(int topRow, int leftCol, String s) {
+        this.topRow = topRow;
+        this.leftCol = leftCol;
+        String[] a = s.split("\n");
+        b = new boolean[a.length][a[0].length()];
+        for (int i = 0; i < b.length; i++) {
+            for (int j = 0; j < b[0].length; j++) {
+                b[i][j] = (a[i].charAt(j) == 'x');
+            }
+        }
+    }
+
     public int getTopRow() {
         return topRow;
     }

@@ -19,33 +19,41 @@ public class BestMoveFinder {
     }
 
     Move findBestMove(Board board, Tetrimino tetrimino) {
-        //System.out.println(board);
-        int bestNewLeftCol = -1;
-        int bestRotateCnt = -1;
+        Action bestAction = findBestAction(board, tetrimino);
+
+        if (bestAction == null) {
+            throw new RuntimeException("Best action not found");
+        }
+
+        if (bestAction.getCwRotationCnt() > 0) {
+            return ROTATE_CW;
+        } else {
+            if (bestAction.getNewLeftCol() < tetrimino.getLeftCol()) {
+                return LEFT;
+            } else if (bestAction.getNewLeftCol() > tetrimino.getLeftCol()) {
+                return RIGHT;
+            } else {
+                return DROP;
+            }
+        }
+    }
+
+    public Action findBestAction(Board board, Tetrimino tetrimino) {
         double maxEval = Double.NEGATIVE_INFINITY;
+
+        Action bestAction = null;
 
         for (int rotateCnt = 0; rotateCnt < 4; rotateCnt++) {
             for (int newLeftCol = 0; newLeftCol + tetrimino.getWidth() - 1 < board.getWidth(); newLeftCol++) {
                 Board newBoard = board.drop(tetrimino, newLeftCol);
-                //System.out.println(newBoard);
                 double curEval = evaluator.evaluate(newBoard);
                 if (curEval > maxEval) {
                     maxEval = curEval;
-                    bestNewLeftCol = newLeftCol;
-                    bestRotateCnt = rotateCnt;
+                    bestAction = new Action(newLeftCol, rotateCnt);
                 }
             }
             tetrimino = tetrimino.rotateCW();
         }
-
-        if (bestRotateCnt > 0) {
-            return ROTATE_CW;
-        } else if (bestNewLeftCol < tetrimino.getLeftCol()) {
-            return LEFT;
-        } else if (bestNewLeftCol > tetrimino.getLeftCol()) {
-            return RIGHT;
-        } else {
-            return DROP;
-        }
+        return bestAction;
     }
 }
