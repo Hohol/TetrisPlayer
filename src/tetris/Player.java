@@ -18,6 +18,10 @@ public class Player {
                 continue;
             }
             System.out.println(board);
+            System.out.println(gameState.getNextTetriminoes());
+            if (true) {
+                //continue;
+            }
             TetriminoWithPosition tetrimino = board.extractFallingTetrimino();
             if (tetrimino == null) {
                 //System.out.println("skip");

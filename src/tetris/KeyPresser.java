@@ -23,11 +23,11 @@ public class KeyPresser {
     }
 
     public void makeMove(Move move) {
+        System.out.println(move);
         press(move.getKeyCode());
     }
 
     private void press(int key) {
-        System.out.println("key " + key + " pressed");
         robot.keyPress(key);
         try {
             Thread.sleep(30);
