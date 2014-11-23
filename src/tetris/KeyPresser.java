@@ -4,6 +4,7 @@
 package tetris;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 
 /**
  * KeyPresser
@@ -26,12 +27,29 @@ public class KeyPresser {
     }
 
     private void press(int key) {
+        System.out.println("key " + key + " pressed");
         robot.keyPress(key);
         try {
-            Thread.sleep(100);
+            Thread.sleep(30);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }/**/
         robot.keyRelease(key);
+        System.out.println("key " + key + " released");
+    }
+
+    public static void main(String[] args) {
+        KeyPresser keyPresser = new KeyPresser();
+        keyPresser.test();
+    }
+
+    private void test() {
+        try {
+            Thread.sleep(5000);
+            press(KeyEvent.VK_SPACE);
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

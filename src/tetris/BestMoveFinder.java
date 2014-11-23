@@ -28,7 +28,7 @@ public class BestMoveFinder {
             throw new RuntimeException("Best action not found");
         }
 
-        if (bestAction.getCwRotationCnt() > 0) {
+         if (bestAction.getCwRotationCnt() > 0) {
             return ROTATE_CW;
         } else {
             if (bestAction.getNewLeftCol() < tetriminoWithPosition.getLeftCol()) {

@@ -43,12 +43,12 @@ public class GameStateReader {
         BufferedImage img = robot.createScreenCapture(new Rectangle(2468 - holdPart, 259 - cellSize, STANDARD_WIDTH * cellSize + holdPart + nextPart, STANDARD_HEIGHT * cellSize));
         //img.setRGB(holdPart + STANDARD_WIDTH*cellSize + 29, cellSize*2+3, Color.WHITE.getRGB());
         //img.setRGB(holdPart + STANDARD_WIDTH*cellSize + 29 + 50, cellSize*2+3 + 50, Color.WHITE.getRGB());
-        try {
+        /*try {
             ImageIO.write(img, "png", new File("img.png"));
             //System.exit(0);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
+        }/**/
 
         Board board = new Board(STANDARD_WIDTH, STANDARD_HEIGHT);
         for (int i = 0; i < STANDARD_HEIGHT; i++) {
