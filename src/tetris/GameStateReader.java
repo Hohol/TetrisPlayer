@@ -3,12 +3,12 @@
  */
 package tetris;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -21,6 +21,25 @@ import static tetris.Board.STANDARD_WIDTH;
  * @author Nikita Glashenko (nikita.glashenko@maxifier.com) (2014-11-22 18:14)
  */
 public class GameStateReader {
+    private final static Set<Integer> STILL_COLORS = new HashSet<Integer>(Arrays.asList(
+            new Color(2, 92, 1).getRGB(),
+            new Color(158, 12, 41).getRGB(),
+            new Color(102, 0, 102).getRGB(),
+            new Color(2, 88, 108).getRGB(),
+            new Color(153, 51, 0).getRGB(),
+            new Color(153, 102, 0).getRGB(),
+            new Color(1, 36, 118).getRGB()
+    ));
+    private final static Set<Integer> FALLING_COLORS = new HashSet<Integer>(Arrays.asList(
+            new Color(188, 137, 35).getRGB(),
+            new Color(188, 86, 35).getRGB(),
+            new Color(36, 71, 153).getRGB(),
+            new Color(193, 47, 76).getRGB(),
+            new Color(37, 123, 143).getRGB(),
+            new Color(137, 35, 137).getRGB(),
+            new Color(37, 127, 36).getRGB()
+    ));
+
     private final Robot robot;
 
     public GameStateReader() {
@@ -33,19 +52,20 @@ public class GameStateReader {
 
     public GameState readGameState() {
 
+        new Color(193, 47, 76);
+
         final int holdPart = 100;
         final int nextPart = 100;
 
         final int cellSize = 18;
         final Color emptyColor1 = new Color(38, 38, 38);
-        final Color emptyColor2 = new Color(47, 47, 47);
+        //final Color emptyColor2 = new Color(47, 47, 47);
 
         BufferedImage img = robot.createScreenCapture(new Rectangle(2468 - holdPart, 259 - cellSize, STANDARD_WIDTH * cellSize + holdPart + nextPart, STANDARD_HEIGHT * cellSize));
         //img.setRGB(holdPart + STANDARD_WIDTH*cellSize + 29, cellSize*2+3, Color.WHITE.getRGB());
-        //img.setRGB(holdPart + STANDARD_WIDTH*cellSize + 29 + 50, cellSize*2+3 + 50, Color.WHITE.getRGB());
         /*try {
             ImageIO.write(img, "png", new File("img.png"));
-            //System.exit(0);
+            System.exit(0);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }/**/
@@ -54,7 +74,7 @@ public class GameStateReader {
         for (int i = 0; i < STANDARD_HEIGHT; i++) {
             for (int j = 0; j < STANDARD_WIDTH; j++) {
                 Color pixelColor = new Color(img.getRGB(holdPart + j * cellSize, i * cellSize + cellSize - 1));
-                if (!pixelColor.equals(emptyColor1) && !pixelColor.equals(emptyColor2)) {
+                if (STILL_COLORS.contains(pixelColor.getRGB()) || FALLING_COLORS.contains(pixelColor.getRGB())) {
                     board.set(i, j, true);
                 }
             }
