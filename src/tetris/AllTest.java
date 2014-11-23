@@ -93,7 +93,7 @@ public class AllTest {
     @Test
     void testNextTetrimino() {
         Board board = new Board(
-                        ".......x..\n" +
+                ".......x..\n" +
                         ".......x..\n" +
                         "xxxxxxxx..\n" +
                         "xxxxxxxx..\n" +
@@ -105,5 +105,23 @@ public class AllTest {
         List<Tetrimino> nextTetriminoes = Collections.singletonList(new Tetrimino("xxxx"));
         ActionWithEval action = bestMoveFinder.findBestAction(board, tetrimino, nextTetriminoes, 0);
         assertEquals(action.getAction(), new Action(board.getWidth() - 2, 1));
+    }
+
+    @Test
+    void minimizeLowTiles() {
+        Board board = new Board(
+                        "......x....\n" +
+                        "......x....\n" +
+                        "......x....\n" +
+                        "......x....\n" +
+                        "x.xxxxxxxx.\n" +
+                        "x.xxxxxxxx.\n" +
+                        "x.xxxxxxxx.\n" +
+                        "x.xxxxxxxx."
+        );
+        Tetrimino tetrimino = new Tetrimino("xxxx");
+        BestMoveFinder bestMoveFinder = new BestMoveFinder();
+        ActionWithEval action = bestMoveFinder.findBestAction(board, tetrimino);
+        assertEquals(action.getAction(), new Action(1, 1));
     }
 }

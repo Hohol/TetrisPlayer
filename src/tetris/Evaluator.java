@@ -29,6 +29,13 @@ public class Evaluator {
                 }
             }
         }
-        return minTopRow - 100 *  badCnt;
+
+        int flatFactor = 0;
+        for (int i = 0; i < board.getWidth() - 1; i++) {
+            flatFactor += Math.abs(board.getTopRowInColumn(i) - board.getTopRowInColumn(i + 1));
+        }
+
+        //return minTopRow - 100 * badCnt  - flatFactor;
+        return -badCnt*100 - flatFactor;
     }
 }
