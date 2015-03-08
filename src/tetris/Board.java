@@ -9,6 +9,7 @@ public class Board {
     private final int height;
     private final int width;
     private final boolean b[][];
+    private int penalty;
 
     public Board(int width, int height) {
         this.height = height;
@@ -30,9 +31,15 @@ public class Board {
         height = a.length;
         width = a[0].length();
         b = new boolean[height][width];
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                b[i][j] = (a[i].charAt(j) == 'x');
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                char ch = a[row].charAt(col);
+                b[row][col] = (ch != '.');
+                if (ch == 'o') {
+                    if (penalty == 0) {
+                        penalty = height - row;
+                    }
+                }
             }
         }
     }
@@ -48,10 +55,14 @@ public class Board {
     @Override
     public String toString() {
         StringBuilder r = new StringBuilder();
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                if (b[i][j]) {
-                    r.append("x");
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                if (b[row][col]) {
+                    if (row >= height - penalty) {
+                        r.append('o');
+                    } else {
+                        r.append("x");
+                    }
                 } else {
                     r.append(".");
                 }
@@ -132,6 +143,7 @@ public class Board {
                 }
             }
         }
+        r.setPenalty(penalty);
         int linesCleared = r.clearFullRows();
         return new DropResult(r, linesCleared);
     }
@@ -139,7 +151,7 @@ public class Board {
     private int clearFullRows() {
         boolean[] full = new boolean[height];
         int linesCleared = 0;
-        for (int row = 0; row < height; row++) {
+        for (int row = 0; row < height - penalty; row++) {
             full[row] = true;
             for (int col = 0; col < width; col++) {
                 if (!b[row][col]) {
@@ -205,5 +217,13 @@ public class Board {
 
     public int getColumnHeight(int col) {
         return getHeight() - getTopRowInColumn(col);
+    }
+
+    public int getPenalty() {
+        return penalty;
+    }
+
+    public void setPenalty(int penalty) {
+        this.penalty = penalty;
     }
 }

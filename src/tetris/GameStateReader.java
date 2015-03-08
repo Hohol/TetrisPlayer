@@ -22,6 +22,8 @@ import static tetris.Board.STANDARD_WIDTH;
  * @author Nikita Glashenko (nikita.glashenko@maxifier.com) (2014-11-22 18:14)
  */
 public class GameStateReader {
+    public static final Color PENALTY_BLOCK_COLOR = new Color(55, 55, 55);
+
     private final static Set<Integer> STILL_COLORS = new HashSet<Integer>(Arrays.asList(
             new Color(2, 92, 1).getRGB(),
             new Color(158, 12, 41).getRGB(),
@@ -29,8 +31,7 @@ public class GameStateReader {
             new Color(2, 88, 108).getRGB(),
             new Color(153, 51, 0).getRGB(),
             new Color(153, 102, 0).getRGB(),
-            new Color(1, 36, 118).getRGB(),
-            new Color(55, 55, 55).getRGB() //battle2p only (penalty blocks at the bottom)
+            new Color(1, 36, 118).getRGB()
     ));
     private final static Set<Integer> FALLING_COLORS = new HashSet<Integer>(Arrays.asList(
             new Color(188, 137, 35).getRGB(),
@@ -94,6 +95,11 @@ public class GameStateReader {
                     minCol = min(minCol, col);
                     maxRow = max(maxRow, row);
                     maxCol = max(maxCol, col);
+                } else if (pixelColor.equals(PENALTY_BLOCK_COLOR)) {
+                    board.set(row, col, true);
+                    if (board.getPenalty() == 0) {
+                        board.setPenalty(STANDARD_HEIGHT - row);
+                    }
                 }
             }
         }

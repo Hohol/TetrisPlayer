@@ -339,6 +339,35 @@ public class BestMoveFinderTest {
         assertFalse(bestAction.equals(forbiddenAction));
     }
 
+    @Test
+    void testBug3() {
+        Board board = new Board(
+                "" +
+                        ".....x....\n" +
+                        ".....x....\n" +
+                        ".....x....\n" +
+                        ".....x....\n" +
+                        "x.........\n" +
+                        "xxxx......\n" +
+                        "xxxx...xxx\n" +
+                        "xxxx...xxx\n" +
+                        "xxxx..xxxx\n" +
+                        "xxxx..xxxx\n" +
+                        "xxxxx.xxxx\n" +
+                        "xxxxx.xxxx\n" +
+                        "xxxxx.xxxx\n" +
+                        "xxxxx.xxxx\n" +
+                        "xxxxx.xxxx\n" +
+                        "xxxxx.xxxx\n" +
+                        "xxxxx.xxxx\n" +
+                        "oooooooooo\n" +
+                        "oooooooooo\n" +
+                        "oooooooooo\n" +
+                        "oooooooooo"
+        );
+        checkAction(board, new Action(5, 0));
+    }
+
     //-------- utils
 
     private void checkAction(Board board, Action expected) {
