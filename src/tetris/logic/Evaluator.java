@@ -29,7 +29,7 @@ public class Evaluator {
             }
         }
         int flatRate = 0;
-        for (int i = 0; i < w - 1; i++) {
+        for (int i = 0; i < w - 2; i++) {
             int diff = Math.abs(board.getTopRowInColumn(i) - board.getTopRowInColumn(i + 1));
             flatRate += diff;
         }
