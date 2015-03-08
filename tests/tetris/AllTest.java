@@ -1,6 +1,9 @@
 package tetris;
 
 import org.testng.annotations.Test;
+import tetris.logic.Action;
+import tetris.logic.ActionWithEval;
+import tetris.logic.BestMoveFinder;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,7 +1,9 @@
 /*
  * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
  */
-package tetris;
+package tetris.logic;
+
+import tetris.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +23,7 @@ public class BestMoveFinder {
         this.evaluator = new Evaluator();
     }
 
-    Move findBestMove(GameState gameState, TetriminoWithPosition tetriminoWithPosition) {
+    public Move findBestMove(GameState gameState, TetriminoWithPosition tetriminoWithPosition) {
         Action bestAction = findBestAction(gameState.getBoard(), tetriminoWithPosition.getTetrimino(), gameState.getNextTetriminoes(), 0).getAction();
 
         if (bestAction == null) {

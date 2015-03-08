@@ -1,5 +1,7 @@
 package tetris;
 
+import tetris.logic.BestMoveFinder;
+
 public class Player {
     public void play() throws Throwable {
         KeyPresser keyPresser = new KeyPresser();
