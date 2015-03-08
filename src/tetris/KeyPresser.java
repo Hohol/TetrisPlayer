@@ -30,7 +30,7 @@ public class KeyPresser {
     private void press(int key) {
         robot.keyPress(key);
         try {
-            Thread.sleep(30);
+            Thread.sleep(35);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }/**/

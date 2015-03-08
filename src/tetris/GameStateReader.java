@@ -54,8 +54,8 @@ public class GameStateReader {
     }
 
     public GameState readGameState() {
-        //return readSprintGameState();
-        return readBattle2PGameState();
+        return readSprintGameState();
+        //return readBattle2PGameState();
     }
 
     private GameState readBattle2PGameState() {
@@ -125,7 +125,9 @@ public class GameStateReader {
         final Color emptyColor1 = new Color(38, 38, 38);
         //final Color emptyColor2 = new Color(47, 47, 47);
 
-        BufferedImage img = robot.createScreenCapture(new Rectangle(2468 - holdPart, 259 - cellSize, STANDARD_WIDTH * cellSize + holdPart + nextPart, STANDARD_HEIGHT * cellSize));
+        final int FIREFOX_Y_SHIFT = 259;
+        final int CHROME_Y_SHIFT = 252;
+        BufferedImage img = robot.createScreenCapture(new Rectangle(2468 - holdPart, CHROME_Y_SHIFT - cellSize, STANDARD_WIDTH * cellSize + holdPart + nextPart, STANDARD_HEIGHT * cellSize));
         //img.setRGB(holdPart + STANDARD_WIDTH*cellSize + 29, cellSize*2+3, Color.WHITE.getRGB());
         /*try {
             ImageIO.write(img, "png", new File("img.png"));

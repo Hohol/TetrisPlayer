@@ -30,6 +30,7 @@ public class Player {
             Move bestMove = bestMoveFinder.findBestMove(gameState, tetrimino);
             //System.out.println(bestMove);
             keyPresser.makeMove(bestMove);
+            System.out.println("---------\n");
         }
     }
 }
