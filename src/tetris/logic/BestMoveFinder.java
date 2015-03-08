@@ -26,24 +26,19 @@ public class BestMoveFinder {
         this.evaluator = new Evaluator();
     }
 
-    public Move findBestMove(GameState gameState, TetriminoWithPosition tetriminoWithPosition) {
+    public ColumnAndOrientation findBestMove(GameState gameState, TetriminoWithPosition tetriminoWithPosition) {
         Action bestAction = findBestAction(gameState.getBoard(), tetriminoWithPosition.getTetrimino(), gameState.getNextTetriminoes(), 0).getAction();
 
         if (bestAction == null) {
-            throw new RuntimeException("Best action not found");
+            return null;
         }
 
-        if (bestAction.getCwRotationCnt() > 0) {
-            return ROTATE_CW;
-        } else {
-            if (bestAction.getNewLeftCol() < tetriminoWithPosition.getLeftCol()) {
-                return LEFT;
-            } else if (bestAction.getNewLeftCol() > tetriminoWithPosition.getLeftCol()) {
-                return RIGHT;
-            } else {
-                return DROP;
-            }
+        Tetrimino tetrimino = tetriminoWithPosition.getTetrimino();
+        for (int i = 0; i < bestAction.getCwRotationCnt(); i++) {
+            tetrimino = tetrimino.rotateCW();
         }
+
+        return new ColumnAndOrientation(bestAction.getNewLeftCol(), tetrimino);
     }
 
     public ActionWithEvaluation findBestAction(Board board, Tetrimino tetrimino, List<Tetrimino> nextTetriminoes, int nextPosition, List<Integer> linesCleared, int depth) {
