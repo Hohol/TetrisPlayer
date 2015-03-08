@@ -6,7 +6,7 @@ public class Player {
     public void play() throws Throwable {
         KeyPresser keyPresser = new KeyPresser();
         GameStateReader gameStateReader = new GameStateReader();
-        BestMoveFinder bestMoveFinder = new BestMoveFinder();
+        BestMoveFinder bestMoveFinder = new BestMoveFinder(2);
         GameState previousState = null;
         //noinspection InfiniteLoopStatement
         while (true) {
@@ -14,6 +14,9 @@ public class Player {
             GameState gameState = gameStateReader.readGameState();
             Board board = gameState.getBoard();
 
+            if (broken(gameState)) {
+                continue;
+            }
             boolean same = gameState.equals(previousState);
             previousState = gameState;
             if (same) {
@@ -31,5 +34,14 @@ public class Player {
             keyPresser.makeMove(bestMove);
             System.out.println("---------\n");
         }
+    }
+
+    private boolean broken(GameState gameState) {
+        for (Tetrimino tetrimino : gameState.getNextTetriminoes()) {
+            if (tetrimino == null) {
+                return true;
+            }
+        }
+        return false;
     }
 }

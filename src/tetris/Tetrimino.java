@@ -3,6 +3,8 @@
  */
 package tetris;
 
+import java.util.Arrays;
+
 /**
  * Tetrimino
  *
@@ -61,5 +63,11 @@ public class Tetrimino {
             r.append("\n");
         }
         return r.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        Tetrimino t = (Tetrimino) o;
+        return Arrays.deepEquals(b, t.b);
     }
 }

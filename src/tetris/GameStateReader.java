@@ -121,29 +121,61 @@ public class GameStateReader {
             }
         }
 
-        int otherNextCellSize = 8;
         int firstNextCellSize = 12;
 
-        Tetrimino next;
-
+        List<Tetrimino> nextTetriminoes = new ArrayList<Tetrimino>();
+        int shiftX = holdPart + STANDARD_WIDTH * cellSize;
         if (battle2p) {
-            int x1 = holdPart + STANDARD_WIDTH * cellSize + 27;
-            int x2 = holdPart + STANDARD_WIDTH * cellSize + 75;
-            int y1 = cellSize * 2 + 8;
-            int y2 = cellSize * 2 + 52;
-            next = getNext(img, x1, y1, x2, y2, firstNextCellSize, Color.BLACK);
+            int x1 = shiftX + 27;
+            int x2 = shiftX + 75;
+            int y1 = 44;
+            int y2 = 88;
+            nextTetriminoes.add(getNext(img, x1, y1, x2, y2, firstNextCellSize, Color.BLACK));
+
+            int otherNextCellSize = 8;
+            x1 = shiftX + 32;
+            x2 = shiftX + 71;
+            y1 = 114;
+            y2 = 152;
+            nextTetriminoes.add(getNext(img, x1, y1, x2, y2, otherNextCellSize, Color.BLACK));
+
+            for (int i = 0; i < 3; i++) {
+                x1 = shiftX + 34;
+                x2 = shiftX + 69;
+                int shift = 53;
+                y1 = 173 + i * shift;
+                y2 = 202 + i * shift;
+                nextTetriminoes.add(getNext(img, x1, y1, x2, y2, otherNextCellSize, Color.BLACK));
+            }
+            //System.out.println(nextTetriminoes);
+            //printImgAndExit(img);
         } else {
-            int x1 = holdPart + STANDARD_WIDTH * cellSize + 29;
-            int x2 = holdPart + STANDARD_WIDTH * cellSize + 79;
-            int y1 = cellSize * 2 + 3;
-            int y2 = cellSize * 2 + 53;
-            next = getNext(img, x1, y1, x2, y2, firstNextCellSize, emptyColor);
+            int x1 = shiftX + 29;
+            int x2 = shiftX + 79;
+            int y1 = 39;
+            int y2 = 89;
+            nextTetriminoes.add(getNext(img, x1, y1, x2, y2, firstNextCellSize, emptyColor));
+
+            int otherNextCellSize = 10;
+            x1 = shiftX + 33;
+            x2 = shiftX + 76;
+            y1 = 115;
+            y2 = 157;
+            nextTetriminoes.add(getNext(img, x1, y1, x2, y2, otherNextCellSize, emptyColor));
+
+            for (int i = 0; i < 3; i++) {
+                x1 = shiftX + 34;
+                x2 = shiftX + 75;
+                int shift = 55;
+                y1 = 178 + i * shift;
+                y2 = 210 + i * shift;
+                nextTetriminoes.add(getNext(img, x1, y1, x2, y2, otherNextCellSize, emptyColor));
+            }
         }
-        List<Tetrimino> nextTetriminoes = next == null ? Collections.<Tetrimino>emptyList() : Collections.singletonList(next);
         return new GameState(board, fallingTetrimino, nextTetriminoes);
     }
 
-    private Tetrimino getNext(BufferedImage img, int x1, int y1, int x2, int y2, int firstNextCellSize, Color emptyColor) {
+    private Tetrimino getNext(BufferedImage img, int x1, int y1, int x2, int y2, int cellSize, Color emptyColor) {
         Tetrimino next;
         int minX = 1 << 20;
         int minY = 1 << 20;
@@ -156,20 +188,22 @@ public class GameStateReader {
                     minY = min(minY, y);
                     maxX = max(maxX, x);
                     maxY = max(maxY, y);
+                    //
                 }
+                //img.setRGB(x, y, Color.WHITE.getRGB());
             }
         }
         if (minX == 1 << 20) {
             return null;
         }
 
-        int width = (maxX - minX + 1) / firstNextCellSize;
-        int height = (maxY - minY + 1) / firstNextCellSize;
+        int width = (maxX - minX + 1) / cellSize;
+        int height = (maxY - minY + 1) / cellSize;
 
         boolean[][] b = new boolean[height][width];
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
-                if (img.getRGB(minX + firstNextCellSize * col, minY + firstNextCellSize * row) != emptyColor.getRGB()) {
+                if (img.getRGB(minX + cellSize * col, minY + cellSize * row) != emptyColor.getRGB()) {
                     b[row][col] = true;
                 }
             }

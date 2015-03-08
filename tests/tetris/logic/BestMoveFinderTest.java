@@ -13,7 +13,7 @@ import static org.testng.Assert.*;
 @Test
 public class BestMoveFinderTest {
 
-    private final BestMoveFinder bestMoveFinder = new BestMoveFinder();
+    private final BestMoveFinder bestMoveFinder = new BestMoveFinder(999);
 
     @Test
     void test() {

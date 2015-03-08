@@ -19,8 +19,10 @@ import static tetris.Move.*;
 public class BestMoveFinder {
 
     private final Evaluator evaluator;
+    private final int depthLimit;
 
-    public BestMoveFinder() {
+    public BestMoveFinder(int depthLimit) {
+        this.depthLimit = depthLimit;
         this.evaluator = new Evaluator();
     }
 
@@ -44,10 +46,11 @@ public class BestMoveFinder {
         }
     }
 
-    public ActionWithEvaluation findBestAction(Board board, Tetrimino tetrimino, List<Tetrimino> nextTetriminoes, int nextPosition, List<Integer> linesCleared) {
+    public ActionWithEvaluation findBestAction(Board board, Tetrimino tetrimino, List<Tetrimino> nextTetriminoes, int nextPosition, List<Integer> linesCleared, int depth) {
         EvaluationState bestState = null;
         Action bestAction = null;
 
+        Tetrimino originalTetrimino = tetrimino;
         for (int rotateCnt = 0; rotateCnt < 4; rotateCnt++) {
             for (int newLeftCol = 0; newLeftCol + tetrimino.getWidth() - 1 < board.getWidth(); newLeftCol++) {
                 DropResult dropResult = board.drop(tetrimino, newLeftCol);
@@ -59,19 +62,21 @@ public class BestMoveFinder {
 
                 EvaluationState curState;
 
-                if (nextPosition == nextTetriminoes.size()) {
+                if (nextPosition == nextTetriminoes.size() || depth == depthLimit) {
                     curState = evaluator.getEvaluation(newBoard, linesCleared);
                 } else {
-                    curState = findBestAction(newBoard, nextTetriminoes.get(nextPosition), nextTetriminoes, nextPosition + 1, linesCleared).getState();
+                    curState = findBestAction(newBoard, nextTetriminoes.get(nextPosition), nextTetriminoes, nextPosition + 1, linesCleared, depth + 1).getState();
                 }
-
-                if (curState.better(bestState)) {
+                if (curState != null && curState.better(bestState)) {
                     bestState = curState;
                     bestAction = new Action(newLeftCol, rotateCnt);
                 }
                 linesCleared.remove(linesCleared.size() - 1);
             }
             tetrimino = tetrimino.rotateCW();
+            if (tetrimino.equals(originalTetrimino)) {
+                break;
+            }
         }
         return new ActionWithEvaluation(bestAction, bestState);
     }
@@ -81,6 +86,6 @@ public class BestMoveFinder {
     }
 
     public ActionWithEvaluation findBestAction(Board board, Tetrimino tetrimino, List<Tetrimino> tetriminoes, int nextPosition) {
-        return findBestAction(board, tetrimino, tetriminoes, nextPosition, new ArrayList<Integer>());
+        return findBestAction(board, tetrimino, tetriminoes, nextPosition, new ArrayList<Integer>(), 0);
     }
 }
