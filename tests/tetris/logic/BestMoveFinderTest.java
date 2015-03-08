@@ -339,12 +339,12 @@ public class BestMoveFinderTest {
         assertFalse(bestAction.equals(forbiddenAction));
     }
 
+    //-------- utils
+
     private void checkAction(Board board, Action expected) {
         Action bestAction = getAction(board);
         assertEquals(bestAction, expected);
     }
-
-    //-------- utils
 
     private Action getAction(Board board) {
         return bestMoveFinder.findBestAction(board, board.extractFallingTetrimino().getTetrimino()).getAction();

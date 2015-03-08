@@ -28,12 +28,17 @@ public class Evaluator {
             }
         }
         int flatRate = 0;
-        int abruptCnt = 0;
-        for (int i = 0; i < board.getWidth() - 2; i++) {
+        for (int i = 0; i < board.getWidth() - 1; i++) {
             int diff = Math.abs(board.getTopRowInColumn(i) - board.getTopRowInColumn(i + 1));
             flatRate += diff;
-            if (diff >= 3) {
-                abruptCnt++;
+        }
+        int holeCnt = 0;
+        for (int i = 0; i < board.getWidth() - 1; i++) {
+            int left = i == 0 ? 999 : board.getColumnHeight(i - 1);
+            int mid = board.getColumnHeight(i);
+            int right = board.getColumnHeight(i + 1);
+            if (mid < Math.min(left, right) - 2) {
+                holeCnt++;
             }
         }
         int nonTetrisLinesCleared = 0;
@@ -50,6 +55,6 @@ public class Evaluator {
         for (int i = 0; i < board.getWidth(); i++) {
             maxColumnHeight = Math.max(maxColumnHeight, board.getColumnHeight(i));
         }
-        return new EvaluationState(badCnt, flatRate, nonTetrisLinesCleared, tetrisLinesCleared, lastColumnHeight, abruptCnt, maxColumnHeight > board.getHeight() - 4);
+        return new EvaluationState(badCnt, flatRate, nonTetrisLinesCleared, tetrisLinesCleared, lastColumnHeight, holeCnt, maxColumnHeight > board.getHeight() - 4);
     }
 }
