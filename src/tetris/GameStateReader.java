@@ -31,7 +31,8 @@ public class GameStateReader {
             new Color(2, 88, 108).getRGB(),
             new Color(153, 51, 0).getRGB(),
             new Color(153, 102, 0).getRGB(),
-            new Color(1, 36, 118).getRGB()
+            new Color(1, 36, 118).getRGB(),
+            new Color(55, 55, 55).getRGB() //battle2p only (penalty blocks at the bottom)
     ));
     private final static Set<Integer> FALLING_COLORS = new HashSet<Integer>(Arrays.asList(
             new Color(188, 137, 35).getRGB(),
