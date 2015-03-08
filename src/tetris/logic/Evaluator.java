@@ -28,15 +28,24 @@ public class Evaluator {
             }
         }
         int flatRate = 0;
-        for (int i = 0; i < board.getWidth() - 1; i++) {
-            flatRate += Math.abs(board.getTopRowInColumn(i) - board.getTopRowInColumn(i + 1));
+        int abruptCnt = 0;
+        for (int i = 0; i < board.getWidth() - 2; i++) {
+            int diff = Math.abs(board.getTopRowInColumn(i) - board.getTopRowInColumn(i + 1));
+            flatRate += diff;
+            if (diff >= 3) {
+                abruptCnt++;
+            }
         }
         int nonTetrisLinesCleared = 0;
+        int tetrisLinesCleared = 0;
         for (int v : linesCleared) {
             if (v != 0 && v != 4) {
                 nonTetrisLinesCleared++;
+            } else if (v == 4) {
+                tetrisLinesCleared++;
             }
         }
-        return new EvaluationState(badCnt, flatRate, nonTetrisLinesCleared);
+        int lastColumnHeight = board.getColumnHeight(board.getWidth() - 1);
+        return new EvaluationState(badCnt, flatRate, nonTetrisLinesCleared, tetrisLinesCleared, lastColumnHeight, abruptCnt);
     }
 }

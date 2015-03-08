@@ -53,8 +53,8 @@ public class GameStateReader {
     }
 
     public GameState readGameState() {
-        return readSprintGameState();
-        //return readBattle2PGameState();
+        //return readSprintGameState();
+        return readBattle2PGameState();
     }
 
     private GameState readBattle2PGameState() {
