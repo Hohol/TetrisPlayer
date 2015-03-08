@@ -69,11 +69,15 @@ public class GameStateReader {
     private GameState getGameState(int xShift, int yShift, boolean battle2p) {
         final int holdPart = 100;
         final int nextPart = 100;
-
         final int cellSize = 18;
-        final Color emptyColor1 = new Color(38, 38, 38);
 
         BufferedImage img = robot.createScreenCapture(new Rectangle(xShift - holdPart, yShift - cellSize, STANDARD_WIDTH * cellSize + holdPart + nextPart, STANDARD_HEIGHT * cellSize + 5));
+
+        return getGameState(battle2p, holdPart, cellSize, img);
+    }
+
+    private GameState getGameState(boolean battle2p, int holdPart, int cellSize, BufferedImage img) {
+        final Color emptyColor = new Color(38, 38, 38);
 
         List<Cell> f = new ArrayList<Cell>();
         int minRow = 999, minCol = 999, maxRow = -1, maxCol = -1;
@@ -104,8 +108,6 @@ public class GameStateReader {
             }
         }
 
-        //printImgAndExit(img);
-
         TetriminoWithPosition fallingTetrimino = null;
         if (maxRow != -1) {
             boolean[][] b = new boolean[maxRow - minRow + 1][maxCol - minCol + 1];
@@ -119,14 +121,36 @@ public class GameStateReader {
             }
         }
 
-        int nextCellSize1 = 12;
+        int otherNextCellSize = 8;
+        int firstNextCellSize = 12;
+
+        Tetrimino next;
+
+        if (battle2p) {
+            int x1 = holdPart + STANDARD_WIDTH * cellSize + 27;
+            int x2 = holdPart + STANDARD_WIDTH * cellSize + 75;
+            int y1 = cellSize * 2 + 8;
+            int y2 = cellSize * 2 + 52;
+            next = getNext(img, x1, y1, x2, y2, firstNextCellSize, Color.BLACK);
+        } else {
+            int x1 = holdPart + STANDARD_WIDTH * cellSize + 29;
+            int x2 = holdPart + STANDARD_WIDTH * cellSize + 79;
+            int y1 = cellSize * 2 + 3;
+            int y2 = cellSize * 2 + 53;
+            next = getNext(img, x1, y1, x2, y2, firstNextCellSize, emptyColor);
+        }
+        return new GameState(board, fallingTetrimino, Collections.singletonList(next));
+    }
+
+    private Tetrimino getNext(BufferedImage img, int x1, int y1, int x2, int y2, int firstNextCellSize, Color emptyColor) {
+        Tetrimino next;
         int minX = 1 << 20;
         int minY = 1 << 20;
         int maxX = 0;
         int maxY = 0;
-        for (int x = holdPart + STANDARD_WIDTH * cellSize + 29; x < holdPart + STANDARD_WIDTH * cellSize + 29 + 50; x++) {
-            for (int y = cellSize * 2 + 3; y < cellSize * 2 + 3 + 50; y++) {
-                if (img.getRGB(x, y) != emptyColor1.getRGB()) {
+        for (int x = x1; x < x2; x++) {
+            for (int y = y1; y < y2; y++) {
+                if (img.getRGB(x, y) != emptyColor.getRGB()) {
                     minX = min(minX, x);
                     minY = min(minY, y);
                     maxX = max(maxX, x);
@@ -135,34 +159,42 @@ public class GameStateReader {
             }
         }
 
-        if (battle2p) {
-            return new GameState(board, fallingTetrimino, Collections.<Tetrimino>emptyList());
-        } else {
-            int width = (maxX - minX + 1) / nextCellSize1;
-            int height = (maxY - minY + 1) / nextCellSize1;
+        int width = (maxX - minX + 1) / firstNextCellSize;
+        int height = (maxY - minY + 1) / firstNextCellSize;
 
-            boolean[][] b = new boolean[height][width];
-            for (int row = 0; row < height; row++) {
-                for (int col = 0; col < width; col++) {
-                    if (img.getRGB(minX + nextCellSize1 * col, minY + nextCellSize1 * row) != emptyColor1.getRGB()) {
-                        b[row][col] = true;
-                    }
+        boolean[][] b = new boolean[height][width];
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
+                if (img.getRGB(minX + firstNextCellSize * col, minY + firstNextCellSize * row) != emptyColor.getRGB()) {
+                    b[row][col] = true;
                 }
             }
-
-            Tetrimino next = new Tetrimino(b);
-
-            return new GameState(board, fallingTetrimino, Collections.singletonList(next));
         }
+
+        next = new Tetrimino(b);
+        return next;
     }
 
     @SuppressWarnings("UnusedDeclaration")
     private void printImgAndExit(BufferedImage img) {
+        printImg(img);
+        System.exit(0);
+    }
+
+    private void printImg(BufferedImage img) {
         try {
             ImageIO.write(img, "png", new File("img.png"));
-            System.exit(0);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void main(String[] args) throws IOException {
+        new GameStateReader().test();
+    }
+
+    private void test() throws IOException {
+        BufferedImage img = ImageIO.read(new File("img.png"));
+        GameState gameState = getGameState(true, 100, 18, img);
     }
 }
