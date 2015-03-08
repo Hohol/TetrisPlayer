@@ -8,19 +8,24 @@ public class EvaluationState {
     private final int tetrisLinesCleared;
     private final int lastColumnHeight;
     private final int abruptCnt;
+    private final boolean tooHigh;
 
-    public EvaluationState(int badCnt, int flatRate, int nonTetrisLinesCleared, int tetrisLinesCleared, int lastColumnHeight, int abruptCnt) {
+    public EvaluationState(int badCnt, int flatRate, int nonTetrisLinesCleared, int tetrisLinesCleared, int lastColumnHeight, int abruptCnt, boolean tooHigh) {
         this.badCnt = badCnt;
         this.flatRate = flatRate;
         this.nonTetrisLinesCleared = nonTetrisLinesCleared;
         this.tetrisLinesCleared = tetrisLinesCleared;
         this.lastColumnHeight = lastColumnHeight;
         this.abruptCnt = abruptCnt;
+        this.tooHigh = tooHigh;
     }
 
     public boolean better(EvaluationState st) {
         if (st == null) {
             return true;
+        }
+        if (tooHigh != st.tooHigh) {
+            return !tooHigh;
         }
         if (badCnt != st.badCnt) {
             return badCnt < st.badCnt;

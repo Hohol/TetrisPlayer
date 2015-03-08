@@ -46,6 +46,10 @@ public class Evaluator {
             }
         }
         int lastColumnHeight = board.getColumnHeight(board.getWidth() - 1);
-        return new EvaluationState(badCnt, flatRate, nonTetrisLinesCleared, tetrisLinesCleared, lastColumnHeight, abruptCnt);
+        int maxColumnHeight = 0;
+        for (int i = 0; i < board.getWidth(); i++) {
+            maxColumnHeight = Math.max(maxColumnHeight, board.getColumnHeight(i));
+        }
+        return new EvaluationState(badCnt, flatRate, nonTetrisLinesCleared, tetrisLinesCleared, lastColumnHeight, abruptCnt, maxColumnHeight > board.getHeight() - 4);
     }
 }
