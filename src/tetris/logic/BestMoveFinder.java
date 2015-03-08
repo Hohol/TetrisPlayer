@@ -5,6 +5,7 @@ package tetris.logic;
 
 import tetris.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class BestMoveFinder {
             throw new RuntimeException("Best action not found");
         }
 
-         if (bestAction.getCwRotationCnt() > 0) {
+        if (bestAction.getCwRotationCnt() > 0) {
             return ROTATE_CW;
         } else {
             if (bestAction.getNewLeftCol() < tetriminoWithPosition.getLeftCol()) {
@@ -43,33 +44,43 @@ public class BestMoveFinder {
         }
     }
 
-    public ActionWithEval findBestAction(Board board, Tetrimino tetrimino, List<Tetrimino> nextTetriminoes, int nextPosition) {
-        double maxProfit = Double.NEGATIVE_INFINITY;
+    public ActionWithEvaluation findBestAction(Board board, Tetrimino tetrimino, List<Tetrimino> nextTetriminoes, int nextPosition, List<Integer> linesCleared) {
+        EvaluationState bestState = null;
         Action bestAction = null;
 
         for (int rotateCnt = 0; rotateCnt < 4; rotateCnt++) {
             for (int newLeftCol = 0; newLeftCol + tetrimino.getWidth() - 1 < board.getWidth(); newLeftCol++) {
-                Board newBoard = board.drop(tetrimino, newLeftCol);
-                if (newBoard == null) {
+                DropResult dropResult = board.drop(tetrimino, newLeftCol);
+                if (dropResult == null) {
                     continue;
                 }
-                double curProfit;
+                Board newBoard = dropResult.getBoard();
+                linesCleared.add(dropResult.getLinesCleared());
+
+                EvaluationState curState;
+
                 if (nextPosition == nextTetriminoes.size()) {
-                    curProfit = evaluator.evaluate(newBoard);
+                    curState = evaluator.getEvaluation(newBoard, linesCleared);
                 } else {
-                    curProfit = findBestAction(newBoard, nextTetriminoes.get(nextPosition), nextTetriminoes, nextPosition + 1).getProfit();
+                    curState = findBestAction(newBoard, nextTetriminoes.get(nextPosition), nextTetriminoes, nextPosition + 1, linesCleared).getState();
                 }
-                if (curProfit > maxProfit) {
-                    maxProfit = curProfit;
+
+                if (curState.better(bestState)) {
+                    bestState = curState;
                     bestAction = new Action(newLeftCol, rotateCnt);
                 }
+                linesCleared.remove(linesCleared.size() - 1);
             }
             tetrimino = tetrimino.rotateCW();
         }
-        return new ActionWithEval(bestAction, maxProfit);
+        return new ActionWithEvaluation(bestAction, bestState);
     }
 
-    public ActionWithEval findBestAction(Board board, Tetrimino tetrimino) {
+    public ActionWithEvaluation findBestAction(Board board, Tetrimino tetrimino) {
         return findBestAction(board, tetrimino, Collections.<Tetrimino>emptyList(), 0);
+    }
+
+    public ActionWithEvaluation findBestAction(Board board, Tetrimino tetrimino, List<Tetrimino> tetriminoes, int nextPosition) {
+        return findBestAction(board, tetrimino, tetriminoes, nextPosition, new ArrayList<Integer>());
     }
 }

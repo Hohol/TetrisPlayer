@@ -3,7 +3,9 @@
  */
 package tetris.logic;
 
-import tetris.Board;
+import tetris.*;
+
+import java.util.List;
 
 /**
  * Evaluator
@@ -11,13 +13,7 @@ import tetris.Board;
  * @author Nikita Glashenko (nikita.glashenko@maxifier.com) (2014-11-22 15:00)
  */
 public class Evaluator {
-
-    // greater is better
-    public double evaluate(Board board) {
-        int minTopRow = 9999;
-        for (int col = 0; col < board.getWidth(); col++) {
-            minTopRow = Math.min(minTopRow, board.getTopRowInColumn(col));
-        }
+    public EvaluationState getEvaluation(Board board, List<Integer> linesCleared) {
         int badCnt = 0;
         for (int col = 0; col < board.getWidth(); col++) {
             boolean found = false;
@@ -31,13 +27,16 @@ public class Evaluator {
                 }
             }
         }
-
-        int flatFactor = 0;
+        int flatRate = 0;
         for (int i = 0; i < board.getWidth() - 1; i++) {
-            flatFactor += Math.abs(board.getTopRowInColumn(i) - board.getTopRowInColumn(i + 1));
+            flatRate += Math.abs(board.getTopRowInColumn(i) - board.getTopRowInColumn(i + 1));
         }
-
-        //return minTopRow - 100 * badCnt  - flatFactor;
-        return -badCnt*100 - flatFactor;
+        int nonTetrisLinesCleared = 0;
+        for (int v : linesCleared) {
+            if (v != 0 && v != 4) {
+                nonTetrisLinesCleared++;
+            }
+        }
+        return new EvaluationState(badCnt, flatRate, nonTetrisLinesCleared);
     }
 }

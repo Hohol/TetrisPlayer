@@ -104,7 +104,7 @@ public class Board {
         return width;
     }
 
-    public Board drop(Tetrimino tetrimino, int leftCol) {
+    public DropResult drop(Tetrimino tetrimino, int leftCol) {
         int minNewTopTetriminoRow = 999;
         for (int j = 0; j < tetrimino.getWidth(); j++) {
             int tetriminoBottomRow = 0;
@@ -132,12 +132,13 @@ public class Board {
                 }
             }
         }
-        r.clearFullRows();
-        return r;
+        int linesCleared = r.clearFullRows();
+        return new DropResult(r, linesCleared);
     }
 
-    private void clearFullRows() {
+    private int clearFullRows() {
         boolean[] full = new boolean[height];
+        int linesCleared = 0;
         for (int row = 0; row < height; row++) {
             full[row] = true;
             for (int col = 0; col < width; col++) {
@@ -145,6 +146,9 @@ public class Board {
                     full[row] = false;
                     break;
                 }
+            }
+            if (full[row]) {
+                linesCleared++;
             }
         }
         for (int col = 0; col < width; col++) {
@@ -160,6 +164,7 @@ public class Board {
                 botRow--;
             }
         }
+        return linesCleared;
     }
 
     public int getTopRowInColumn(int col) {
@@ -196,5 +201,9 @@ public class Board {
         }
 
         return true;
+    }
+
+    public int getColumnHeight(int col) {
+        return getHeight() - getTopRowInColumn(col);
     }
 }
