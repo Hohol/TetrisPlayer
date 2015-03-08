@@ -139,7 +139,8 @@ public class GameStateReader {
             int y2 = cellSize * 2 + 53;
             next = getNext(img, x1, y1, x2, y2, firstNextCellSize, emptyColor);
         }
-        return new GameState(board, fallingTetrimino, Collections.singletonList(next));
+        List<Tetrimino> nextTetriminoes = next == null ? Collections.<Tetrimino>emptyList() : Collections.singletonList(next);
+        return new GameState(board, fallingTetrimino, nextTetriminoes);
     }
 
     private Tetrimino getNext(BufferedImage img, int x1, int y1, int x2, int y2, int firstNextCellSize, Color emptyColor) {
@@ -157,6 +158,9 @@ public class GameStateReader {
                     maxY = max(maxY, y);
                 }
             }
+        }
+        if (minX == 1 << 20) {
+            return null;
         }
 
         int width = (maxX - minX + 1) / firstNextCellSize;
