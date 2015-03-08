@@ -24,7 +24,7 @@ import static tetris.Board.STANDARD_WIDTH;
 public class GameStateReader {
     public static final Color PENALTY_BLOCK_COLOR = new Color(55, 55, 55);
 
-    private final static Set<Integer> STILL_COLORS = new HashSet<Integer>(Arrays.asList(
+    private final static Set<Integer> STILL_COLORS = new HashSet<>(Arrays.asList(
             new Color(2, 92, 1).getRGB(),
             new Color(158, 12, 41).getRGB(),
             new Color(102, 0, 102).getRGB(),
@@ -33,7 +33,7 @@ public class GameStateReader {
             new Color(153, 102, 0).getRGB(),
             new Color(1, 36, 118).getRGB()
     ));
-    private final static Set<Integer> FALLING_COLORS = new HashSet<Integer>(Arrays.asList(
+    private final static Set<Integer> FALLING_COLORS = new HashSet<>(Arrays.asList(
             new Color(188, 137, 35).getRGB(),
             new Color(188, 86, 35).getRGB(),
             new Color(36, 71, 153).getRGB(),
@@ -58,10 +58,12 @@ public class GameStateReader {
         return readBattle2PGameState();
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     private GameState readBattle2PGameState() {
         return getGameState(2267, 280, true);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     private GameState readSprintGameState() {
         return getGameState(2468, 252, false);
     }
@@ -79,7 +81,7 @@ public class GameStateReader {
     private GameState getGameState(boolean battle2p, int holdPart, int cellSize, BufferedImage img) {
         final Color emptyColor = new Color(38, 38, 38);
 
-        List<Cell> f = new ArrayList<Cell>();
+        List<Cell> f = new ArrayList<>();
         int minRow = 999, minCol = 999, maxRow = -1, maxCol = -1;
         Board board = new Board(STANDARD_WIDTH, STANDARD_HEIGHT);
         for (int row = 0; row < STANDARD_HEIGHT; row++) {
@@ -123,7 +125,7 @@ public class GameStateReader {
 
         int firstNextCellSize = 12;
 
-        List<Tetrimino> nextTetriminoes = new ArrayList<Tetrimino>();
+        List<Tetrimino> nextTetriminoes = new ArrayList<>();
         int shiftX = holdPart + STANDARD_WIDTH * cellSize;
         if (battle2p) {
             int x1 = shiftX + 27;
@@ -147,8 +149,6 @@ public class GameStateReader {
                 y2 = 202 + i * shift;
                 nextTetriminoes.add(getNext(img, x1, y1, x2, y2, otherNextCellSize, Color.BLACK));
             }
-            //System.out.println(nextTetriminoes);
-            //printImgAndExit(img);
         } else {
             int x1 = shiftX + 29;
             int x2 = shiftX + 79;
@@ -225,14 +225,5 @@ public class GameStateReader {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        new GameStateReader().test();
-    }
-
-    private void test() throws IOException {
-        BufferedImage img = ImageIO.read(new File("img.png"));
-        GameState gameState = getGameState(true, 100, 18, img);
     }
 }

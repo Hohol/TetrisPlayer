@@ -5,11 +5,6 @@ package tetris;
 
 import java.util.Arrays;
 
-/**
- * Tetrimino
- *
- * @author Nikita Glashenko (nikita.glashenko@maxifier.com) (2014-11-22 17:32)
- */
 public class Tetrimino {
     private final boolean[][] b;
 
@@ -52,9 +47,9 @@ public class Tetrimino {
     @Override
     public String toString() {
         StringBuilder r = new StringBuilder();
-        for (int i = 0; i < b.length; i++) {
+        for (boolean[] aB : b) {
             for (int j = 0; j < b[0].length; j++) {
-                if (b[i][j]) {
+                if (aB[j]) {
                     r.append("x");
                 } else {
                     r.append(".");
@@ -65,6 +60,7 @@ public class Tetrimino {
         return r.toString();
     }
 
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public boolean equals(Object o) {
         Tetrimino t = (Tetrimino) o;

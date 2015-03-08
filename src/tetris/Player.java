@@ -26,11 +26,9 @@ public class Player {
             System.out.println(gameState.getNextTetriminoes());
             TetriminoWithPosition tetrimino = gameState.getFallingTetrimino();
             if (tetrimino == null) {
-                //System.out.println("skip");
                 continue;
             }
             Move bestMove = bestMoveFinder.findBestMove(gameState, tetrimino);
-            //System.out.println(bestMove);
             keyPresser.makeMove(bestMove);
             System.out.println("---------\n");
         }

@@ -43,9 +43,8 @@ public class GameState {
         if (!board.equals(gameState.board)) return false;
         if (fallingTetrimino != null ? !fallingTetrimino.equals(gameState.fallingTetrimino) : gameState.fallingTetrimino != null)
             return false;
-        if (!nextTetriminoes.equals(gameState.nextTetriminoes)) return false;
+        return nextTetriminoes.equals(gameState.nextTetriminoes);
 
-        return true;
     }
 
     @Override

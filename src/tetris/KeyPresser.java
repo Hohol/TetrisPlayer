@@ -33,7 +33,7 @@ public class KeyPresser {
             Thread.sleep(35);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }/**/
+        }
         robot.keyRelease(key);
         System.out.println("key " + key + " released");
     }
