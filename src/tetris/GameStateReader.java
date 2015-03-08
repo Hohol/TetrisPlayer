@@ -8,10 +8,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.List;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -55,8 +53,8 @@ public class GameStateReader {
     }
 
     public GameState readGameState() {
-        //return readSprintGameState();
-        return readBattle2PGameState();
+        return readSprintGameState();
+        //return readBattle2PGameState();
     }
 
     private GameState readBattle2PGameState() {
@@ -76,23 +74,44 @@ public class GameStateReader {
 
         BufferedImage img = robot.createScreenCapture(new Rectangle(xShift - holdPart, yShift - cellSize, STANDARD_WIDTH * cellSize + holdPart + nextPart, STANDARD_HEIGHT * cellSize + 5));
 
+        List<Cell> f = new ArrayList<Cell>();
+        int minRow = 999, minCol = 999, maxRow = -1, maxCol = -1;
         Board board = new Board(STANDARD_WIDTH, STANDARD_HEIGHT);
-        for (int i = 0; i < STANDARD_HEIGHT; i++) {
-            for (int j = 0; j < STANDARD_WIDTH; j++) {
-                int x = holdPart + j * cellSize;
-                int y = i * cellSize + cellSize - 1;
+        for (int row = 0; row < STANDARD_HEIGHT; row++) {
+            for (int col = 0; col < STANDARD_WIDTH; col++) {
+                int x = holdPart + col * cellSize;
+                int y = row * cellSize + cellSize - 1;
                 if (battle2p) {
                     x--;
                     y++;
                 }
                 Color pixelColor = new Color(img.getRGB(x, y));
-                if (STILL_COLORS.contains(pixelColor.getRGB()) || FALLING_COLORS.contains(pixelColor.getRGB())) {
-                    board.set(i, j, true);
+                if (STILL_COLORS.contains(pixelColor.getRGB())) {
+                    board.set(row, col, true);
+                } else if (FALLING_COLORS.contains(pixelColor.getRGB())) {
+                    f.add(new Cell(row, col));
+                    minRow = min(minRow, row);
+                    minCol = min(minCol, col);
+                    maxRow = max(maxRow, row);
+                    maxCol = max(maxCol, col);
                 }
             }
         }
 
         //printImgAndExit(img);
+
+        TetriminoWithPosition fallingTetrimino = null;
+        if (maxRow != -1) {
+            boolean[][] b = new boolean[maxRow - minRow + 1][maxCol - minCol + 1];
+            int cnt = 0;
+            for (Cell cell : f) {
+                b[cell.x - minRow][cell.y - minCol] = true;
+                cnt++;
+            }
+            if (cnt == 4) {
+                fallingTetrimino = new TetriminoWithPosition(minRow, minCol, new Tetrimino(b));
+            }
+        }
 
         int nextCellSize1 = 12;
         int minX = 1 << 20;
@@ -111,7 +130,7 @@ public class GameStateReader {
         }
 
         if (battle2p) {
-            return new GameState(board, Collections.<Tetrimino>emptyList());
+            return new GameState(board, fallingTetrimino, Collections.<Tetrimino>emptyList());
         } else {
             int width = (maxX - minX + 1) / nextCellSize1;
             int height = (maxY - minY + 1) / nextCellSize1;
@@ -127,7 +146,7 @@ public class GameStateReader {
 
             Tetrimino next = new Tetrimino(b);
 
-            return new GameState(board, Collections.singletonList(next));
+            return new GameState(board, fallingTetrimino, Collections.singletonList(next));
         }
     }
 

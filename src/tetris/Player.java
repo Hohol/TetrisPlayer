@@ -5,24 +5,21 @@ public class Player {
         KeyPresser keyPresser = new KeyPresser();
         GameStateReader gameStateReader = new GameStateReader();
         BestMoveFinder bestMoveFinder = new BestMoveFinder();
-        Board previousBoard = null;
+        GameState previousState = null;
         //noinspection InfiniteLoopStatement
         while (true) {
             Thread.sleep(30);
             GameState gameState = gameStateReader.readGameState();
             Board board = gameState.getBoard();
 
-            boolean same = board.equals(previousBoard);
-            previousBoard = board;
+            boolean same = gameState.equals(previousState);
+            previousState = gameState;
             if (same) {
                 continue;
             }
             System.out.println(board);
             System.out.println(gameState.getNextTetriminoes());
-            if (true) {
-                //continue;
-            }
-            TetriminoWithPosition tetrimino = board.extractFallingTetrimino();
+            TetriminoWithPosition tetrimino = gameState.getFallingTetrimino();
             if (tetrimino == null) {
                 //System.out.println("skip");
                 continue;
