@@ -15,7 +15,8 @@ import java.util.List;
 public class Evaluator {
     public EvaluationState getEvaluation(Board board, List<Integer> linesCleared) {
         int badCnt = 0;
-        for (int col = 0; col < board.getWidth(); col++) {
+        int w = board.getWidth();
+        for (int col = 0; col < w; col++) {
             boolean found = false;
             for (int row = 0; row < board.getHeight(); row++) {
                 if (board.get(row, col)) {
@@ -28,12 +29,12 @@ public class Evaluator {
             }
         }
         int flatRate = 0;
-        for (int i = 0; i < board.getWidth() - 1; i++) {
+        for (int i = 0; i < w - 1; i++) {
             int diff = Math.abs(board.getTopRowInColumn(i) - board.getTopRowInColumn(i + 1));
             flatRate += diff;
         }
         int holeCnt = 0;
-        for (int i = 0; i < board.getWidth() - 1; i++) {
+        for (int i = 0; i < w - 1; i++) {
             int left = i == 0 ? 999 : board.getColumnHeight(i - 1);
             int mid = board.getColumnHeight(i);
             int right = board.getColumnHeight(i + 1);
@@ -41,6 +42,7 @@ public class Evaluator {
                 holeCnt++;
             }
         }
+        boolean virtualHole = board.getColumnHeight(w - 2) < board.getColumnHeight(w - 3) - 2;
         int nonTetrisLinesCleared = 0;
         int tetrisLinesCleared = 0;
         for (int v : linesCleared) {
@@ -50,11 +52,11 @@ public class Evaluator {
                 tetrisLinesCleared++;
             }
         }
-        int lastColumnHeight = board.getColumnHeight(board.getWidth() - 1);
+        int lastColumnHeight = board.getColumnHeight(w - 1);
         int maxColumnHeight = 0;
-        for (int i = 0; i < board.getWidth(); i++) {
+        for (int i = 0; i < w; i++) {
             maxColumnHeight = Math.max(maxColumnHeight, board.getColumnHeight(i));
         }
-        return new EvaluationState(badCnt, flatRate, nonTetrisLinesCleared, tetrisLinesCleared, lastColumnHeight, holeCnt, maxColumnHeight > board.getHeight() - 4);
+        return new EvaluationState(badCnt, flatRate, nonTetrisLinesCleared, tetrisLinesCleared, lastColumnHeight, holeCnt, virtualHole, maxColumnHeight > board.getHeight() - 4);
     }
 }

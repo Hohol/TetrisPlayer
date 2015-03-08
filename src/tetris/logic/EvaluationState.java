@@ -8,15 +8,17 @@ public class EvaluationState {
     private final int tetrisLinesCleared;
     private final int lastColumnHeight;
     private final int holeCnt;
+    private final boolean virtualHole;
     private final boolean tooHigh;
 
-    public EvaluationState(int badCnt, int flatRate, int nonTetrisLinesCleared, int tetrisLinesCleared, int lastColumnHeight, int holeCnt, boolean tooHigh) {
+    public EvaluationState(int badCnt, int flatRate, int nonTetrisLinesCleared, int tetrisLinesCleared, int lastColumnHeight, int holeCnt, boolean virtualHole, boolean tooHigh) {
         this.badCnt = badCnt;
         this.flatRate = flatRate;
         this.nonTetrisLinesCleared = nonTetrisLinesCleared;
         this.tetrisLinesCleared = tetrisLinesCleared;
         this.lastColumnHeight = lastColumnHeight;
         this.holeCnt = holeCnt;
+        this.virtualHole = virtualHole;
         this.tooHigh = tooHigh;
     }
 
@@ -43,6 +45,9 @@ public class EvaluationState {
                 return lastColumnHeight < st.lastColumnHeight;
             }
             if (lastColumnHeight == 0) {
+                if (virtualHole != st.virtualHole) {
+                    return !virtualHole;
+                }
                 if (nonTetrisLinesCleared != st.nonTetrisLinesCleared) {
                     return nonTetrisLinesCleared < st.nonTetrisLinesCleared;
                 }

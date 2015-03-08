@@ -368,6 +368,32 @@ public class BestMoveFinderTest {
         checkAction(board, new Action(5, 0));
     }
 
+    @Test
+    void avoidVirtualHole() {
+        Board board = new Board(
+                "" +
+                        "....xx....\n" +
+                        "....xx....\n" +
+                        "..........\n" +
+                        "..........\n" +
+                        "..........\n" +
+                        "..........\n" +
+                        "..........\n" +
+                        "..........\n" +
+                        "..........\n" +
+                        "xxxxxx....\n" +
+                        "xxxxxx....\n" +
+                        "xxxxxxxx..\n" +
+                        "xxxxxxxxx."
+        );
+        checkForbidden(board, new Action(6, 0));
+    }
+
+    private void checkForbidden(Board board, Action forbiddenAction) {
+        Action bestAction = getAction(board);
+        assertFalse(bestAction.equals(forbiddenAction));
+    }
+
     //-------- utils
 
     private void checkAction(Board board, Action expected) {
