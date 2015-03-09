@@ -6,6 +6,43 @@ package tetris;
 import java.util.Arrays;
 
 public class Tetrimino {
+    public static Tetrimino[] ALL = {
+            new Tetrimino(
+                    "" +
+                            "xxxx"
+            ),
+            new Tetrimino(
+                    "" +
+                            "xx\n" +
+                            "xx"
+            ),
+            new Tetrimino(
+                    "" +
+                            "xxx\n" +
+                            "..x"
+            ),
+            new Tetrimino(
+                    "" +
+                            "xxx\n" +
+                            "x.."
+            ),
+            new Tetrimino(
+                    "" +
+                            "xxx\n" +
+                            ".x."
+            ),
+            new Tetrimino(
+                    "" +
+                            ".xx\n" +
+                            "xx."
+            ),
+            new Tetrimino(
+                    "" +
+                            "xx.\n" +
+                            ".xx"
+            ),
+    };
+
     private final boolean[][] b;
 
     public Tetrimino(boolean[][] b) {

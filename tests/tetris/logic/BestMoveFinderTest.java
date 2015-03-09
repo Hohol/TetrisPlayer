@@ -5,6 +5,7 @@ import org.testng.annotations.Test;
 import tetris.Board;
 import tetris.Tetrimino;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -389,12 +390,43 @@ public class BestMoveFinderTest {
         checkForbidden(board, new Action(6, 0));
     }
 
+    @Test
+    void testBug5() {
+        Board board = new Board(
+                "" +
+                        "....xxxx..\n" +
+                        "..........\n" +
+                        "..........\n" +
+                        "..........\n" +
+                        "..........\n" +
+                        "..........\n" +
+                        "..........\n" +
+                        "..........\n" +
+                        "..........\n" +
+                        "..........\n" +
+                        ".........."
+
+        );
+        Tetrimino tetrimino = board.extractFallingTetrimino().getTetrimino();
+        List<Tetrimino> nextTetriminoes = new ArrayList<>();
+        nextTetriminoes.add(null);
+        nextTetriminoes.add(null);
+        for (Tetrimino a : Tetrimino.ALL) {
+            nextTetriminoes.set(0, a);
+            for (Tetrimino b : Tetrimino.ALL) {
+                nextTetriminoes.set(1, b);
+                Action bestAction = bestMoveFinder.findBestAction(board, tetrimino, nextTetriminoes, 0).getAction();
+                assertFalse(bestAction.equals(new Action(board.getWidth() - 1, 1)));
+            }
+        }
+    }
+
+    //-------- utils
+
     private void checkForbidden(Board board, Action forbiddenAction) {
         Action bestAction = getAction(board);
         assertFalse(bestAction.equals(forbiddenAction));
     }
-
-    //-------- utils
 
     private void checkAction(Board board, Action expected) {
         Action bestAction = getAction(board);
