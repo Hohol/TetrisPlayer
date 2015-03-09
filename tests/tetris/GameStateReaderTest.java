@@ -59,7 +59,7 @@ public class GameStateReaderTest {
             throw new RuntimeException(e);
         }
         GameStateReader gameStateReader = new GameStateReader();
-        GameState gameState = gameStateReader.getGameState(true, img);
+        GameState gameState = gameStateReader.getGameState(GameStateReader.GameType.BATTLE2P, img);
         assertEquals(gameState.getFallingTetrimino(), expected);
     }
 }

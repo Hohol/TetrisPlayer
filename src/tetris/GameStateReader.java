@@ -61,26 +61,33 @@ public class GameStateReader {
 
     public GameState readGameState() {
         //return readSprintGameState();
-        return readBattle2PGameState();
+        //return readBattle2PGameState();
+        return readBattle6PGameState();
     }
+
+    static enum GameType {SPRINT, BATTLE2P, BATTLE6P}
 
     @SuppressWarnings("UnusedDeclaration")
     private GameState readBattle2PGameState() {
-        return getGameState(2267, 280, true);
+        return getGameState(2267, 280, GameType.BATTLE2P);
     }
 
     @SuppressWarnings("UnusedDeclaration")
     private GameState readSprintGameState() {
-        return getGameState(2468, 252, false);
+        return getGameState(2468, 252, GameType.SPRINT);
     }
 
-    private GameState getGameState(int xShift, int yShift, boolean battle2p) {
+    private GameState readBattle6PGameState() {
+        return getGameState(2266, 266, GameType.BATTLE6P);
+    }
+
+    private GameState getGameState(int xShift, int yShift, GameType gameType) {
         BufferedImage img = robot.createScreenCapture(new Rectangle(xShift - HOLD_PART, yShift - CELL_SIZE, STANDARD_WIDTH * CELL_SIZE + HOLD_PART + NEXT_PART, STANDARD_HEIGHT * CELL_SIZE + 5));
 
-        return getGameState(battle2p, img);
+        return getGameState(gameType, img);
     }
 
-    GameState getGameState(boolean battle2p, BufferedImage img) {
+    GameState getGameState(GameType gameType, BufferedImage img) {
         final Color emptyColor = new Color(38, 38, 38);
 
         List<Cell> f = new ArrayList<>();
@@ -92,7 +99,7 @@ public class GameStateReader {
             for (int col = 0; col < STANDARD_WIDTH; col++) {
                 int x = HOLD_PART + col * CELL_SIZE;
                 int y = row * CELL_SIZE + CELL_SIZE - 1;
-                if (battle2p) {
+                if (gameType == GameType.BATTLE2P) {
                     x--;
                     y++;
                     if (yellowShift) {
@@ -157,7 +164,7 @@ public class GameStateReader {
         List<Tetrimino> nextTetriminoes = new ArrayList<>();
         Tetrimino tetriminoInStash;
         int shiftX = HOLD_PART + STANDARD_WIDTH * CELL_SIZE;
-        if (battle2p) {
+        if (gameType == GameType.BATTLE2P) {
             int x1 = shiftX + 27;
             int x2 = shiftX + 75;
             int y1 = 44;
@@ -180,7 +187,7 @@ public class GameStateReader {
                 nextTetriminoes.add(readTetrimino(img, x1, y1, x2, y2, otherNextCellSize, Color.BLACK));
             }
             tetriminoInStash = readTetrimino(img, 35, 44, 83, 88, 12, Color.BLACK);
-        } else {
+        } else if (gameType == GameType.SPRINT) {
             int x1 = shiftX + 29;
             int x2 = shiftX + 79;
             int y1 = 39;
@@ -203,6 +210,30 @@ public class GameStateReader {
                 nextTetriminoes.add(readTetrimino(img, x1, y1, x2, y2, otherNextCellSize, emptyColor));
             }
             tetriminoInStash = readTetrimino(img, 10, 45, 60, 93, 12, emptyColor);
+        } else  { //b6p
+            int x1 = shiftX + 27;
+            int x2 = shiftX + 75;
+            int y1 = 44;
+            int y2 = 88;
+            nextTetriminoes.add(readTetrimino(img, x1, y1, x2, y2, firstNextCellSize, Color.BLACK));
+
+            int otherNextCellSize = 8;
+            x1 = shiftX + 32;
+            x2 = shiftX + 71;
+            y1 = 114;
+            y2 = 152;
+            nextTetriminoes.add(readTetrimino(img, x1, y1, x2, y2, otherNextCellSize, Color.BLACK));
+
+            for (int i = 0; i < 3; i++) {
+                x1 = shiftX + 34;
+                x2 = shiftX + 69;
+                int shift = 53;
+                y1 = 173 + i * shift;
+                y2 = 202 + i * shift;
+                nextTetriminoes.add(readTetrimino(img, x1, y1, x2, y2, otherNextCellSize, Color.BLACK));
+            }
+            tetriminoInStash = readTetrimino(img, 35, 44, 83, 88, 12, Color.BLACK);
+            //printImgAndExit(img);
         }
         return new GameState(board, fallingTetrimino, nextTetriminoes, tetriminoInStash);
     }
