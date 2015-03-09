@@ -32,7 +32,8 @@ public class Player {
             if (twp == null) {
                 continue;
             }
-            if (target == null) {
+            Tetrimino tetrimino = twp.getTetrimino();
+            if (target == null || wrongTetrimino(target.getTetrimino(), tetrimino)) {
                 target = bestMoveFinder.findBestMove(gameState, twp);
                 if (target == null) {
                     continue;
@@ -40,7 +41,6 @@ public class Player {
             }
 
             Move move;
-            Tetrimino tetrimino = twp.getTetrimino();
             if (!tetrimino.equals(target.getTetrimino())) {
                 if (canReachInOneOrTwoCWRotations(tetrimino, target.getTetrimino())) {
                     move = ROTATE_CW;
@@ -56,8 +56,19 @@ public class Player {
                 target = null;
             }
             keyPresser.makeMove(move);
+            System.out.println(target);
             System.out.println("------");
         }
+    }
+
+    private boolean wrongTetrimino(Tetrimino tetrimino, Tetrimino target) {
+        for (int i = 0; i < 4; i++) {
+            if (tetrimino.equals(target)) {
+                return false;
+            }
+            tetrimino = tetrimino.rotateCW();
+        }
+        return true;
     }
 
     private boolean canReachInOneOrTwoCWRotations(Tetrimino tetrimino, Tetrimino target) {

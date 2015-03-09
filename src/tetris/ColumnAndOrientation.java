@@ -16,4 +16,12 @@ public class ColumnAndOrientation {
     public Tetrimino getTetrimino() {
         return tetrimino;
     }
+
+    @Override
+    public String toString() {
+        return "ColumnAndOrientation{" +
+                "column=" + column +
+                ", tetrimino=" + tetrimino +
+                '}';
+    }
 }
