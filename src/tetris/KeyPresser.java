@@ -4,7 +4,7 @@
 package tetris;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
+import java.util.List;
 
 /**
  * KeyPresser
@@ -22,23 +22,22 @@ public class KeyPresser {
         }
     }
 
-    public void makeMove(Move move) {
-        System.out.println(move);
-        press(move.getKeyCode());
-    }
-
-    private void press(int key) {
-        robot.keyPress(key);
+    public void makeMove(List<Move> moves) {
+        System.out.println(moves);
+        for (Move move : moves) {
+            robot.keyPress(move.getKeyCode());
+        }
         try {
             Thread.sleep(35);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        robot.keyRelease(key);
-        System.out.println("key " + key + " released");
+        for (Move move : moves) {
+            robot.keyRelease(move.getKeyCode());
+        }
     }
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         KeyPresser keyPresser = new KeyPresser();
         keyPresser.test();
     }
@@ -51,5 +50,5 @@ public class KeyPresser {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-    }
+    }*/
 }

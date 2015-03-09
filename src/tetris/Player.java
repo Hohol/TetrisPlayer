@@ -2,6 +2,9 @@ package tetris;
 
 import tetris.logic.BestMoveFinder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static tetris.Move.*;
 
 public class Player {
@@ -36,27 +39,31 @@ public class Player {
                 }
             }
 
-            Move move;
+            List<Move> moves = new ArrayList<>();
             if (target.isStash()) {
-                move = STASH;
+                moves.add(STASH);
                 target = null;
                 stashAllowed = false;
-            } else if (!tetrimino.equals(target.getTetrimino())) {
-                if (canReachInOneOrTwoCWRotations(tetrimino, target.getTetrimino())) {
-                    move = ROTATE_CW;
-                } else {
-                    move = ROTATE_CCW;
-                }
-            } else if (target.getColumn() > twp.getLeftCol()) {
-                move = RIGHT;
-            } else if (target.getColumn() < twp.getLeftCol()) {
-                move = LEFT;
             } else {
-                move = DROP;
-                target = null;
-                stashAllowed = true;
+                if (!tetrimino.equals(target.getTetrimino())) {
+                    if (canReachInOneOrTwoCWRotations(tetrimino, target.getTetrimino())) {
+                        moves.add(ROTATE_CW);
+                    } else {
+                        moves.add(ROTATE_CCW);
+                    }
+                }
+                if (target.getColumn() > twp.getLeftCol()) {
+                    moves.add(RIGHT);
+                } else if (target.getColumn() < twp.getLeftCol()) {
+                    moves.add(LEFT);
+                }
+                if (moves.isEmpty()) {
+                    moves.add(DROP);
+                    target = null;
+                    stashAllowed = true;
+                }
             }
-            keyPresser.makeMove(move);
+            keyPresser.makeMove(moves);
             System.out.println(target);
             System.out.println("------");
         }
