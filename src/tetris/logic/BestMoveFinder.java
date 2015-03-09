@@ -86,7 +86,7 @@ public class BestMoveFinder {
             }
 
             EvaluationState curState = findBestAction(board, tetriminoInStash, false, fallingTetrimino, nextTetriminoes, nextPosition, linesCleared, depth).getState();
-            if (curState.better(bestState)) {
+            if (curState != null && curState.better(bestState)) {
                 bestState = curState;
                 bestAction = new Action(true);
             }
