@@ -10,8 +10,9 @@ public class EvaluationState {
     private final int holeCnt;
     private final boolean virtualHole;
     private final boolean tooHigh;
+    private final boolean lineInStash;
 
-    public EvaluationState(int badCnt, int flatRate, int nonTetrisLinesCleared, int tetrisLinesCleared, int lastColumnHeight, int holeCnt, boolean virtualHole, boolean tooHigh) {
+    public EvaluationState(int badCnt, int flatRate, int nonTetrisLinesCleared, int tetrisLinesCleared, int lastColumnHeight, int holeCnt, boolean virtualHole, boolean tooHigh, boolean lineInStash) {
         this.badCnt = badCnt;
         this.flatRate = flatRate;
         this.nonTetrisLinesCleared = nonTetrisLinesCleared;
@@ -20,6 +21,7 @@ public class EvaluationState {
         this.holeCnt = holeCnt;
         this.virtualHole = virtualHole;
         this.tooHigh = tooHigh;
+        this.lineInStash = lineInStash;
     }
 
     public boolean better(EvaluationState st) {
@@ -52,6 +54,9 @@ public class EvaluationState {
                     return nonTetrisLinesCleared < st.nonTetrisLinesCleared;
                 }
             }
+        }
+        if (lineInStash != st.lineInStash) {
+            return lineInStash;
         }
         if (flatRate != st.flatRate) {
             return flatRate < st.flatRate;

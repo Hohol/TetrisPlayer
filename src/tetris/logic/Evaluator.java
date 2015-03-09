@@ -13,7 +13,7 @@ import java.util.List;
  * @author Nikita Glashenko (nikita.glashenko@maxifier.com) (2014-11-22 15:00)
  */
 public class Evaluator {
-    public EvaluationState getEvaluation(Board board, List<Integer> linesCleared) {
+    public EvaluationState getEvaluation(Board board, List<Integer> linesCleared, boolean lineInStash) {
         int badCnt = 0;
         int w = board.getWidth();
         for (int col = 0; col < w; col++) {
@@ -57,6 +57,6 @@ public class Evaluator {
         for (int i = 0; i < w; i++) {
             maxColumnHeight = Math.max(maxColumnHeight, board.getColumnHeight(i));
         }
-        return new EvaluationState(badCnt, flatRate, nonTetrisLinesCleared, tetrisLinesCleared, lastColumnHeight, holeCnt, virtualHole, maxColumnHeight > board.getHeight() - 4);
+        return new EvaluationState(badCnt, flatRate, nonTetrisLinesCleared, tetrisLinesCleared, lastColumnHeight, holeCnt, virtualHole, maxColumnHeight > board.getHeight() - 4, lineInStash);
     }
 }

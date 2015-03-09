@@ -5,7 +5,6 @@ import org.testng.annotations.Test;
 import tetris.Board;
 import tetris.Tetrimino;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -205,36 +204,6 @@ public class BestMoveFinderTest {
     }
 
     @Test
-    void testBug2() {
-        Board board = new Board(
-                "" +
-                        "..x.......\n" +
-                        "..x.......\n" +
-                        "..x.......\n" +
-                        "..x.......\n" +
-                        "..........\n" +
-                        "..........\n" +
-                        "..........\n" +
-                        "..........\n" +
-                        "..........\n" +
-                        "..........\n" +
-                        "..........\n" +
-                        "..xxx.....\n" +
-                        ".xxxx.....\n" +
-                        "xxxxx.....\n" +
-                        "xxxxxxx...\n" +
-                        "xxxxxxxxx.\n" +
-                        "xxxxxxxxx.\n" +
-                        "xxxxxxxx..\n" +
-                        "xxxxxxxxx.\n" +
-                        "xxxxxxxxx.\n" +
-                        "xxxxxxxxx."
-        );
-        Action bestAction = bestMoveFinder.findBestAction(board, null, true, board.extractFallingTetrimino().getTetrimino(), Collections.singletonList(new Tetrimino("xx\nxx")), 0).getAction();
-        assertEquals(bestAction, new Action(board.getWidth() - 1, 0));
-    }
-
-    @Test
     void testBug4() {
         Board board = new Board(
                 "....x.....\n" +
@@ -391,7 +360,7 @@ public class BestMoveFinderTest {
     }
 
     @Test
-    void testBug5() {
+    void betterKeepLineInStash() {
         Board board = new Board(
                 "" +
                         "....xxxx..\n" +
@@ -407,18 +376,10 @@ public class BestMoveFinderTest {
                         ".........."
 
         );
-        Tetrimino tetrimino = board.extractFallingTetrimino().getTetrimino();
-        List<Tetrimino> nextTetriminoes = new ArrayList<>();
-        nextTetriminoes.add(null);
-        nextTetriminoes.add(null);
-        for (Tetrimino a : Tetrimino.ALL) {
-            nextTetriminoes.set(0, a);
-            for (Tetrimino b : Tetrimino.ALL) {
-                nextTetriminoes.set(1, b);
-                Action bestAction = bestMoveFinder.findBestAction(board, null, true, tetrimino, nextTetriminoes, 0).getAction();
-                assertFalse(bestAction.equals(new Action(board.getWidth() - 1, 1)));
-            }
-        }
+        BestMoveFinder bestMoveFinder = new BestMoveFinder(0);
+        List<Tetrimino> nextTetriminoes = Collections.singletonList(new Tetrimino("xx\nxx"));
+        Action bestAction = bestMoveFinder.findBestAction(board, null, true, board.extractFallingTetrimino().getTetrimino(), nextTetriminoes, 0).getAction();
+        assertEquals(bestAction, new Action(true));
     }
 
     //-------- utils
