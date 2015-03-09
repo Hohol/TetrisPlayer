@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2008-2014 Maxifier Ltd. All Rights Reserved.
- */
 package tetris;
 
 import javax.imageio.ImageIO;
@@ -16,11 +13,6 @@ import static java.lang.Math.min;
 import static tetris.Board.STANDARD_HEIGHT;
 import static tetris.Board.STANDARD_WIDTH;
 
-/**
- * GameStateReader
- *
- * @author Nikita Glashenko (nikita.glashenko@maxifier.com) (2014-11-22 18:14)
- */
 public class GameStateReader {
     public static final Color PENALTY_BLOCK_COLOR = new Color(55, 55, 55);
 
@@ -33,17 +25,31 @@ public class GameStateReader {
             new Color(153, 102, 0).getRGB(),
             new Color(1, 36, 118).getRGB()
     ));
+
+    public static final int YELLOW_SHIFT_COLOR = new Color(255, 210, 0).getRGB();
+
+    public static final int O_BLOCK_COLOR = new Color(188, 137, 35).getRGB();
+    public static final int T_BLOCK_COLOR = new Color(137, 35, 137).getRGB();
+    public static final int J_BLOCK_COLOR = new Color(36, 71, 153).getRGB();
+
+    public static final int S_BLOCK_COLOR = new Color(37, 127, 36).getRGB();
+    public static final int I_BLOCK_COLOR = new Color(37, 123, 143).getRGB();
+    public static final int Z_BLOCK_COLOR = new Color(193, 47, 76).getRGB();
+    public static final int L_BLOCK_COLOR = new Color(188, 86, 35).getRGB();
     private final static Set<Integer> FALLING_COLORS = new HashSet<>(Arrays.asList(
-            new Color(188, 137, 35).getRGB(),
-            new Color(188, 86, 35).getRGB(),
-            new Color(36, 71, 153).getRGB(),
-            new Color(193, 47, 76).getRGB(),
-            new Color(37, 123, 143).getRGB(),
-            new Color(137, 35, 137).getRGB(),
-            new Color(37, 127, 36).getRGB()
+            O_BLOCK_COLOR,
+            L_BLOCK_COLOR,
+            J_BLOCK_COLOR,
+            Z_BLOCK_COLOR,
+            I_BLOCK_COLOR,
+            T_BLOCK_COLOR,
+            S_BLOCK_COLOR
     ));
 
     private final Robot robot;
+    public static final int HOLD_PART = 100;
+    public static final int NEXT_PART = 100;
+    public static final int CELL_SIZE = 18;
 
     public GameStateReader() {
         try {
@@ -54,8 +60,8 @@ public class GameStateReader {
     }
 
     public GameState readGameState() {
-        return readSprintGameState();
-        //return readBattle2PGameState();
+        //return readSprintGameState();
+        return readBattle2PGameState();
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -69,33 +75,36 @@ public class GameStateReader {
     }
 
     private GameState getGameState(int xShift, int yShift, boolean battle2p) {
-        final int holdPart = 100;
-        final int nextPart = 100;
-        final int cellSize = 18;
+        BufferedImage img = robot.createScreenCapture(new Rectangle(xShift - HOLD_PART, yShift - CELL_SIZE, STANDARD_WIDTH * CELL_SIZE + HOLD_PART + NEXT_PART, STANDARD_HEIGHT * CELL_SIZE + 5));
 
-        BufferedImage img = robot.createScreenCapture(new Rectangle(xShift - holdPart, yShift - cellSize, STANDARD_WIDTH * cellSize + holdPart + nextPart, STANDARD_HEIGHT * cellSize + 5));
-
-        return getGameState(battle2p, holdPart, cellSize, img);
+        return getGameState(battle2p, img);
     }
 
-    private GameState getGameState(boolean battle2p, int holdPart, int cellSize, BufferedImage img) {
+    GameState getGameState(boolean battle2p, BufferedImage img) {
         final Color emptyColor = new Color(38, 38, 38);
 
         List<Cell> f = new ArrayList<>();
         int minRow = 999, minCol = 999, maxRow = -1, maxCol = -1;
         Board board = new Board(STANDARD_WIDTH, STANDARD_HEIGHT);
+        boolean yellowShift = img.getRGB(7, 0) == YELLOW_SHIFT_COLOR;
+        int fallingColor = -1;
         for (int row = 0; row < STANDARD_HEIGHT; row++) {
             for (int col = 0; col < STANDARD_WIDTH; col++) {
-                int x = holdPart + col * cellSize;
-                int y = row * cellSize + cellSize - 1;
+                int x = HOLD_PART + col * CELL_SIZE;
+                int y = row * CELL_SIZE + CELL_SIZE - 1;
                 if (battle2p) {
                     x--;
                     y++;
+                    if (yellowShift) {
+                        x--;
+                        y--;
+                    }
                 }
                 Color pixelColor = new Color(img.getRGB(x, y));
                 if (STILL_COLORS.contains(pixelColor.getRGB())) {
                     board.set(row, col, true);
                 } else if (FALLING_COLORS.contains(pixelColor.getRGB())) {
+                    fallingColor = pixelColor.getRGB();
                     f.add(new Cell(row, col));
                     minRow = min(minRow, row);
                     minCol = min(minCol, col);
@@ -107,8 +116,10 @@ public class GameStateReader {
                         board.setPenalty(STANDARD_HEIGHT - row);
                     }
                 }
+                //img.setRGB(x, y, Color.WHITE.getRGB());
             }
         }
+        //printImgAndExit(img);
 
         TetriminoWithPosition fallingTetrimino = null;
         if (maxRow != -1) {
@@ -120,6 +131,24 @@ public class GameStateReader {
             }
             if (cnt == 4) {
                 fallingTetrimino = new TetriminoWithPosition(minRow, minCol, new Tetrimino(b));
+            } else {
+                if (fallingColor == T_BLOCK_COLOR) {
+                    fallingTetrimino = new TetriminoWithPosition(maxRow - 1, minCol, Tetrimino.T);
+                } else if (fallingColor == O_BLOCK_COLOR) {
+                    fallingTetrimino = new TetriminoWithPosition(maxRow - 1, minCol, Tetrimino.O);
+                } else if (fallingColor == J_BLOCK_COLOR) {
+                    fallingTetrimino = new TetriminoWithPosition(maxRow - 1, minCol, Tetrimino.J);
+                } else if (fallingColor == S_BLOCK_COLOR) {
+                    fallingTetrimino = new TetriminoWithPosition(maxRow - 1, minCol, Tetrimino.S);
+                } else if (fallingColor == I_BLOCK_COLOR) {
+                    fallingTetrimino = new TetriminoWithPosition(maxRow - 3, minCol, Tetrimino.I.rotateCW());
+                } else if (fallingColor == Z_BLOCK_COLOR) {
+                    fallingTetrimino = new TetriminoWithPosition(maxRow - 1, minCol - 1, Tetrimino.Z);
+                } else if (fallingColor == L_BLOCK_COLOR) {
+                    fallingTetrimino = new TetriminoWithPosition(maxRow - 1, minCol, Tetrimino.L);
+                } else {
+                    printImgAndExit(img);
+                }
             }
         }
 
@@ -127,7 +156,7 @@ public class GameStateReader {
 
         List<Tetrimino> nextTetriminoes = new ArrayList<>();
         Tetrimino tetriminoInStash;
-        int shiftX = holdPart + STANDARD_WIDTH * cellSize;
+        int shiftX = HOLD_PART + STANDARD_WIDTH * CELL_SIZE;
         if (battle2p) {
             int x1 = shiftX + 27;
             int x2 = shiftX + 75;

@@ -6,42 +6,42 @@ package tetris;
 import java.util.Arrays;
 
 public class Tetrimino {
-    public static Tetrimino[] ALL = {
-            new Tetrimino(
-                    "" +
-                            "xxxx"
-            ),
-            new Tetrimino(
-                    "" +
-                            "xx\n" +
-                            "xx"
-            ),
-            new Tetrimino(
-                    "" +
-                            "xxx\n" +
-                            "..x"
-            ),
-            new Tetrimino(
-                    "" +
-                            "xxx\n" +
-                            "x.."
-            ),
-            new Tetrimino(
-                    "" +
-                            "xxx\n" +
-                            ".x."
-            ),
-            new Tetrimino(
-                    "" +
-                            ".xx\n" +
-                            "xx."
-            ),
-            new Tetrimino(
-                    "" +
-                            "xx.\n" +
-                            ".xx"
-            ),
-    };
+    public static final Tetrimino T = new Tetrimino(
+            "" +
+                    ".x.\n" +
+                    "xxx"
+
+    );
+    public static final Tetrimino O = new Tetrimino(
+            "" +
+                    "xx\n" +
+                    "xx"
+    );
+    public static final Tetrimino J = new Tetrimino(
+            "" +
+                    "x..\n" +
+                    "xxx"
+    );
+    public static final Tetrimino S = new Tetrimino(
+            "" +
+                    ".xx\n" +
+                    "xx."
+    );
+    public static final Tetrimino I = new Tetrimino(
+            "" +
+                    "xxxx"
+    );
+    public static final Tetrimino Z = new Tetrimino(
+            "" +
+                    "xx.\n" +
+                    ".xx"
+    );
+    public static final Tetrimino L = new Tetrimino(
+            "" +
+                    "..x\n" +
+                    "xxx"
+    );
+    public static Tetrimino[] ALL = {I, O, J, L, T, S, Z,};
 
     private final boolean[][] b;
 

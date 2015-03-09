@@ -22,11 +22,6 @@ public class Player {
             if (broken(gameState)) {
                 continue;
             }
-            boolean same = gameState.equals(previousState);
-            previousState = gameState;
-            if (same) {
-                continue;
-            }
             System.out.println(board);
             System.out.println(gameState.getNextTetriminoes());
             TetriminoWithPosition twp = gameState.getFallingTetrimino();
