@@ -9,12 +9,20 @@ package tetris.logic;
  * @author Nikita Glashenko (nikita.glashenko@maxifier.com) (2014-11-22 15:54)
  */
 public class Action {
+    private final boolean stash;
     private final int newLeftCol;
     private final int cwRotationCnt;
 
     public Action(int newLeftCol, int cwRotationCnt) {
+        this.stash = false;
         this.newLeftCol = newLeftCol;
         this.cwRotationCnt = cwRotationCnt;
+    }
+
+    public Action(boolean stash) {
+        this.stash = stash;
+        newLeftCol = -1;
+        cwRotationCnt = -1;
     }
 
     public int getNewLeftCol() {
@@ -28,7 +36,8 @@ public class Action {
     @Override
     public String toString() {
         return "Action{" +
-                "newLeftCol=" + newLeftCol +
+                "stash=" + stash +
+                ", newLeftCol=" + newLeftCol +
                 ", cwRotationCnt=" + cwRotationCnt +
                 '}';
     }
@@ -51,5 +60,9 @@ public class Action {
         int result = newLeftCol;
         result = 31 * result + cwRotationCnt;
         return result;
+    }
+
+    public boolean isStash() {
+        return stash;
     }
 }

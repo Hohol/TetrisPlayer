@@ -8,10 +8,11 @@ public class Player {
     public void play() throws Throwable {
         KeyPresser keyPresser = new KeyPresser();
         GameStateReader gameStateReader = new GameStateReader();
-        BestMoveFinder bestMoveFinder = new BestMoveFinder(2);
+        BestMoveFinder bestMoveFinder = new BestMoveFinder(1);
         GameState previousState = null;
         //noinspection InfiniteLoopStatement
-        ColumnAndOrientation target = null;
+        ColumnAndOrientationOrStash target = null;
+        boolean stashAllowed = true;
         while (true) {
             Thread.sleep(30);
 
@@ -34,14 +35,18 @@ public class Player {
             }
             Tetrimino tetrimino = twp.getTetrimino();
             if (target == null || wrongTetrimino(target.getTetrimino(), tetrimino)) {
-                target = bestMoveFinder.findBestMove(gameState, twp);
+                target = bestMoveFinder.findBestMove(gameState, twp, stashAllowed);
                 if (target == null) {
                     continue;
                 }
             }
 
             Move move;
-            if (!tetrimino.equals(target.getTetrimino())) {
+            if (target.isStash()) {
+                move = STASH;
+                target = null;
+                stashAllowed = false;
+            } else if (!tetrimino.equals(target.getTetrimino())) {
                 if (canReachInOneOrTwoCWRotations(tetrimino, target.getTetrimino())) {
                     move = ROTATE_CW;
                 } else {
@@ -54,6 +59,7 @@ public class Player {
             } else {
                 move = DROP;
                 target = null;
+                stashAllowed = true;
             }
             keyPresser.makeMove(move);
             System.out.println(target);

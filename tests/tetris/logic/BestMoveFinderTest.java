@@ -108,7 +108,7 @@ public class BestMoveFinderTest {
         );
         Tetrimino tetrimino = new Tetrimino("xxxx");
         List<Tetrimino> nextTetriminoes = Collections.singletonList(new Tetrimino("xxxx"));
-        ActionWithEvaluation action = bestMoveFinder.findBestAction(board, tetrimino, nextTetriminoes, 0);
+        ActionWithEvaluation action = bestMoveFinder.findBestAction(board, null, true, tetrimino, nextTetriminoes, 0);
         assertEquals(action.getAction(), new Action(board.getWidth() - 2, 1));
     }
 
@@ -230,7 +230,7 @@ public class BestMoveFinderTest {
                         "xxxxxxxxx.\n" +
                         "xxxxxxxxx."
         );
-        Action bestAction = bestMoveFinder.findBestAction(board, board.extractFallingTetrimino().getTetrimino(), Collections.singletonList(new Tetrimino("xx\nxx")), 0).getAction();
+        Action bestAction = bestMoveFinder.findBestAction(board, null, true, board.extractFallingTetrimino().getTetrimino(), Collections.singletonList(new Tetrimino("xx\nxx")), 0).getAction();
         assertEquals(bestAction, new Action(board.getWidth() - 1, 0));
     }
 
@@ -415,7 +415,7 @@ public class BestMoveFinderTest {
             nextTetriminoes.set(0, a);
             for (Tetrimino b : Tetrimino.ALL) {
                 nextTetriminoes.set(1, b);
-                Action bestAction = bestMoveFinder.findBestAction(board, tetrimino, nextTetriminoes, 0).getAction();
+                Action bestAction = bestMoveFinder.findBestAction(board, null, true, tetrimino, nextTetriminoes, 0).getAction();
                 assertFalse(bestAction.equals(new Action(board.getWidth() - 1, 1)));
             }
         }

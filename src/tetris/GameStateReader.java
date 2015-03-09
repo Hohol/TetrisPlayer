@@ -54,8 +54,8 @@ public class GameStateReader {
     }
 
     public GameState readGameState() {
-        //return readSprintGameState();
-        return readBattle2PGameState();
+        return readSprintGameState();
+        //return readBattle2PGameState();
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -126,20 +126,21 @@ public class GameStateReader {
         int firstNextCellSize = 12;
 
         List<Tetrimino> nextTetriminoes = new ArrayList<>();
+        Tetrimino tetriminoInStash;
         int shiftX = holdPart + STANDARD_WIDTH * cellSize;
         if (battle2p) {
             int x1 = shiftX + 27;
             int x2 = shiftX + 75;
             int y1 = 44;
             int y2 = 88;
-            nextTetriminoes.add(getNext(img, x1, y1, x2, y2, firstNextCellSize, Color.BLACK));
+            nextTetriminoes.add(readTetrimino(img, x1, y1, x2, y2, firstNextCellSize, Color.BLACK));
 
             int otherNextCellSize = 8;
             x1 = shiftX + 32;
             x2 = shiftX + 71;
             y1 = 114;
             y2 = 152;
-            nextTetriminoes.add(getNext(img, x1, y1, x2, y2, otherNextCellSize, Color.BLACK));
+            nextTetriminoes.add(readTetrimino(img, x1, y1, x2, y2, otherNextCellSize, Color.BLACK));
 
             for (int i = 0; i < 3; i++) {
                 x1 = shiftX + 34;
@@ -147,21 +148,22 @@ public class GameStateReader {
                 int shift = 53;
                 y1 = 173 + i * shift;
                 y2 = 202 + i * shift;
-                nextTetriminoes.add(getNext(img, x1, y1, x2, y2, otherNextCellSize, Color.BLACK));
+                nextTetriminoes.add(readTetrimino(img, x1, y1, x2, y2, otherNextCellSize, Color.BLACK));
             }
+            tetriminoInStash = readTetrimino(img, 35, 44, 83, 88, 12, Color.BLACK);
         } else {
             int x1 = shiftX + 29;
             int x2 = shiftX + 79;
             int y1 = 39;
             int y2 = 89;
-            nextTetriminoes.add(getNext(img, x1, y1, x2, y2, firstNextCellSize, emptyColor));
+            nextTetriminoes.add(readTetrimino(img, x1, y1, x2, y2, firstNextCellSize, emptyColor));
 
             int otherNextCellSize = 10;
             x1 = shiftX + 33;
             x2 = shiftX + 76;
             y1 = 115;
             y2 = 157;
-            nextTetriminoes.add(getNext(img, x1, y1, x2, y2, otherNextCellSize, emptyColor));
+            nextTetriminoes.add(readTetrimino(img, x1, y1, x2, y2, otherNextCellSize, emptyColor));
 
             for (int i = 0; i < 3; i++) {
                 x1 = shiftX + 34;
@@ -169,13 +171,14 @@ public class GameStateReader {
                 int shift = 55;
                 y1 = 178 + i * shift;
                 y2 = 210 + i * shift;
-                nextTetriminoes.add(getNext(img, x1, y1, x2, y2, otherNextCellSize, emptyColor));
+                nextTetriminoes.add(readTetrimino(img, x1, y1, x2, y2, otherNextCellSize, emptyColor));
             }
+            tetriminoInStash = readTetrimino(img, 10, 45, 60, 93, 12, emptyColor);
         }
-        return new GameState(board, fallingTetrimino, nextTetriminoes);
+        return new GameState(board, fallingTetrimino, nextTetriminoes, tetriminoInStash);
     }
 
-    private Tetrimino getNext(BufferedImage img, int x1, int y1, int x2, int y2, int cellSize, Color emptyColor) {
+    private Tetrimino readTetrimino(BufferedImage img, int x1, int y1, int x2, int y2, int cellSize, Color emptyColor) {
         Tetrimino next;
         int minX = 1 << 20;
         int minY = 1 << 20;
@@ -188,7 +191,6 @@ public class GameStateReader {
                     minY = min(minY, y);
                     maxX = max(maxX, x);
                     maxY = max(maxY, y);
-                    //
                 }
                 //img.setRGB(x, y, Color.WHITE.getRGB());
             }
