@@ -28,7 +28,7 @@ public class KeyPresser {
             robot.keyPress(move.getKeyCode());
         }
         try {
-            Thread.sleep(35);
+            Thread.sleep(40);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

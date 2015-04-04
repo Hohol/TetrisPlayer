@@ -18,7 +18,7 @@ public class Player {
         ColumnAndOrientationOrStash target = null;
         boolean stashAllowed = true;
         while (true) {
-            Thread.sleep(30);
+            Thread.sleep(40);
 
             GameState gameState = gameStateReader.readGameState();
             Board board = gameState.getBoard();
