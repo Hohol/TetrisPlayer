@@ -3,6 +3,7 @@ package tetris;
 import tetris.logic.BestMoveFinder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static tetris.Move.*;
@@ -23,6 +24,8 @@ public class Player {
             Board board = gameState.getBoard();
 
             if (broken(gameState)) {
+                keyPresser.makeMove(Arrays.asList(Move.ENTER));
+                Thread.sleep(500);
                 continue;
             }
             System.out.println(board);
@@ -91,7 +94,7 @@ public class Player {
 
     private boolean broken(GameState gameState) {
         for (Tetrimino tetrimino : gameState.getNextTetriminoes()) {
-            if (tetrimino == null) {
+            if (tetrimino == null || tetrimino.getWidth() == 4 && tetrimino.getHeight() == 4) {
                 return true;
             }
         }

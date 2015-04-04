@@ -61,8 +61,8 @@ public class GameStateReader {
 
     public GameState readGameState() {
         //return readSprintGameState();
-        //return readBattle2PGameState();
-        return readBattle6PGameState();
+        return readBattle2PGameState();
+        //return readBattle6PGameState();
     }
 
     static enum GameType {SPRINT, BATTLE2P, BATTLE6P}
