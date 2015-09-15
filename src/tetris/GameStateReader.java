@@ -51,6 +51,11 @@ public class GameStateReader {
     public static final int NEXT_PART = 100;
     public static final int CELL_SIZE = 18;
 
+    private static int[] findBoardColors = {-7237231, -7303024, -7303024, -6842473, -5460820, -3750202, -3487030, -3487030, -3487030, -3487030, -3487030, -7368817, -11842741, -13750738, -13750738, -13750738, -13750738, -13750738, -13750738, -13750738, -13750738, -14727834, -15639137, -16615976, -16745756};
+
+    private int boardX = -1;
+    private int boardY = -1;
+
     public GameStateReader() {
         try {
             robot = new Robot();
@@ -60,29 +65,57 @@ public class GameStateReader {
     }
 
     public GameState readGameState() {
+        if (boardX == -1) {
+            return null;
+        }
         //return readSprintGameState();
         return readBattle2PGameState();
         //return readBattle6PGameState();
+    }
+
+    public void findBoard() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize(); // todo multi-monitor?
+        BufferedImage img = robot.createScreenCapture(new Rectangle(0, 0, screenSize.width, screenSize.height));
+        for (int x = 0; x + findBoardColors.length - 1 < screenSize.width; x++) {
+            for (int y = 0; y < screenSize.height; y++) {
+                if (match(img, x, y)) {
+                    boardX = x - 135;
+                    boardY = y - 7;
+                    return;
+                }
+            }
+        }
+    }
+
+    private boolean match(BufferedImage img, int x, int y) {
+        for (int i = 0; i < findBoardColors.length; i++) {
+            int color = img.getRGB(x + i, y);
+            if (color != findBoardColors[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     static enum GameType {SPRINT, BATTLE2P, BATTLE6P}
 
     @SuppressWarnings("UnusedDeclaration")
     private GameState readBattle2PGameState() {
-        return getGameState(2267, 280, GameType.BATTLE2P);
+        //return getGameState(2267 - HOLD_PART, 280 - CELL_SIZE, GameType.BATTLE2P);
+        return getGameState(boardX, boardY, GameType.BATTLE2P);
     }
 
     @SuppressWarnings("UnusedDeclaration")
     private GameState readSprintGameState() {
-        return getGameState(2468, 252, GameType.SPRINT);
+        return getGameState(2468 - HOLD_PART, 252 - CELL_SIZE, GameType.SPRINT);
     }
 
     private GameState readBattle6PGameState() {
-        return getGameState(2266, 266, GameType.BATTLE6P);
+        return getGameState(2266 - HOLD_PART, 266 - CELL_SIZE, GameType.BATTLE6P);
     }
 
-    private GameState getGameState(int xShift, int yShift, GameType gameType) {
-        BufferedImage img = robot.createScreenCapture(new Rectangle(xShift - HOLD_PART, yShift - CELL_SIZE, STANDARD_WIDTH * CELL_SIZE + HOLD_PART + NEXT_PART, STANDARD_HEIGHT * CELL_SIZE + 5));
+    private GameState getGameState(int xShift2, int yShift2, GameType gameType) {
+        BufferedImage img = robot.createScreenCapture(new Rectangle(xShift2, yShift2, STANDARD_WIDTH * CELL_SIZE + HOLD_PART + NEXT_PART, STANDARD_HEIGHT * CELL_SIZE + 5));
 
         return getGameState(gameType, img);
     }
@@ -123,7 +156,6 @@ public class GameStateReader {
                         board.setPenalty(STANDARD_HEIGHT - row);
                     }
                 }
-                //img.setRGB(x, y, Color.WHITE.getRGB());
             }
         }
         //printImgAndExit(img);
@@ -210,7 +242,7 @@ public class GameStateReader {
                 nextTetriminoes.add(readTetrimino(img, x1, y1, x2, y2, otherNextCellSize, emptyColor));
             }
             tetriminoInStash = readTetrimino(img, 10, 45, 60, 93, 12, emptyColor);
-        } else  { //b6p
+        } else { //b6p
             int x1 = shiftX + 27;
             int x2 = shiftX + 75;
             int y1 = 44;

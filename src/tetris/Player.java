@@ -15,19 +15,20 @@ public class Player {
         BestMoveFinder bestMoveFinder = new BestMoveFinder(1);
         GameState previousState = null;
         //noinspection InfiniteLoopStatement
+        gameStateReader.findBoard();
         ColumnAndOrientationOrStash target = null;
         boolean stashAllowed = true;
         while (true) {
             Thread.sleep(40);
 
             GameState gameState = gameStateReader.readGameState();
-            Board board = gameState.getBoard();
-
             if (broken(gameState)) {
                 keyPresser.makeMove(Arrays.asList(Move.ENTER));
+                gameStateReader.findBoard();
                 Thread.sleep(500);
                 continue;
             }
+            Board board = gameState.getBoard();
             System.out.println(board);
             System.out.println(gameState.getNextTetriminoes());
             TetriminoWithPosition twp = gameState.getFallingTetrimino();
@@ -93,6 +94,9 @@ public class Player {
     }
 
     private boolean broken(GameState gameState) {
+        if (gameState == null) {
+            return true;
+        }
         for (Tetrimino tetrimino : gameState.getNextTetriminoes()) {
             if (tetrimino == null || tetrimino.getWidth() == 4 && tetrimino.getHeight() == 4) {
                 return true;
